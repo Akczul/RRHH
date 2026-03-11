@@ -1,0 +1,58 @@
+/* =============================================
+   ThemeToggle.css — Estilos del switch de tema
+   ============================================= */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 99px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+/* Emojis de luna y sol */
+.toggle-icon {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Pista del switch */
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  background: var(--border);
+  border-radius: 99px;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+/* Estado oscuro activo */
+.is-dark .toggle-track {
+  background: var(--accent);
+}
+
+/* Bolita deslizante */
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Mover la bolita al hacer clic en modo claro */
+.is-light .toggle-thumb {
+  transform: translateX(16px);
+}

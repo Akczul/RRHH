@@ -1,0 +1,108 @@
+/* =============================================
+   Topbar.css — Estilos de la barra superior
+   ============================================= */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 240px; /* Alineado con el ancho del sidebar */
+  height: 60px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  z-index: 90;
+  transition: left 0.3s ease;
+}
+
+/* Ajustar cuando el sidebar está contraído */
+.topbar.sidebar-collapsed {
+  left: 68px;
+}
+
+/* Botón para alternar sidebar */
+.topbar-toggle {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  color: var(--text2);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.topbar-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Título de la página */
+.topbar-titulo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+
+/* Acciones a la derecha */
+.topbar-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+/* Divisor vertical */
+.topbar-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+}
+
+/* Info del usuario */
+.topbar-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  gap: 0;
+}
+
+.usuario-nombre {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.usuario-rol {
+  font-size: 0.72rem;
+  color: var(--text3);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .topbar {
+    left: 0 !important;
+    padding: 0 1rem;
+  }
+
+  .usuario-info {
+    display: none;
+  }
+}

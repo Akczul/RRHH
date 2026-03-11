@@ -1,0 +1,179 @@
+/* =============================================
+   MyProfile.css — Estilos de la página Mi Perfil
+   ============================================= */
+
+.perfil-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 820px;
+}
+
+/* ─── Tarjeta hero ─── */
+.perfil-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.perfil-hero {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.perfil-hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.perfil-nombre {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+.perfil-cargo {
+  font-size: 0.88rem;
+  color: var(--text2);
+  margin: 0;
+}
+
+/* ─── Cuadrícula de datos ─── */
+.perfil-datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem 1.5rem;
+}
+
+.perfil-dato {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.perfil-dato-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text3);
+}
+
+.perfil-dato-valor {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.perfil-salario {
+  font-weight: 700;
+  color: var(--accent2);
+}
+
+/* ─── Secciones ─── */
+.perfil-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.perfil-section-titulo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+/* ─── Métricas de asistencia ─── */
+.perfil-metricas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.perfil-metrica {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+  border-top: 3px solid transparent;
+  text-align: center;
+}
+
+.perfil-metrica-green   { border-top-color: var(--accent2); }
+.perfil-metrica-orange  { border-top-color: var(--accent3); }
+.perfil-metrica-red     { border-top-color: var(--danger); }
+.perfil-metrica-blue    { border-top-color: var(--accent); }
+
+.perfil-metrica-valor {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+.perfil-metrica-label {
+  font-size: 0.75rem;
+  color: var(--text3);
+}
+
+/* ─── Barra de puntualidad ─── */
+.perfil-puntualidad {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.perfil-puntualidad-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.perfil-puntualidad-label {
+  font-size: 0.85rem;
+  color: var(--text2);
+}
+
+.perfil-puntualidad-pct {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 700px) {
+  .perfil-metricas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .perfil-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .perfil-metricas {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .perfil-datos {
+    grid-template-columns: 1fr;
+  }
+}
