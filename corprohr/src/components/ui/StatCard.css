@@ -1,0 +1,89 @@
+/* =============================================
+   StatCard.css — Estilos del componente StatCard
+   ============================================= */
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* Línea de color en la parte superior */
+.stat-card-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--radio) var(--radio) 0 0;
+}
+
+.stat-card-blue .stat-card-bar { background: var(--accent); }
+.stat-card-green .stat-card-bar { background: var(--accent2); }
+.stat-card-orange .stat-card-bar { background: var(--accent3); }
+.stat-card-red .stat-card-bar { background: var(--danger); }
+
+/* Cuerpo de la tarjeta */
+.stat-card-body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Ícono */
+.stat-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.stat-icon-blue { background: rgba(79, 142, 247, 0.12); }
+.stat-icon-green { background: rgba(56, 217, 169, 0.12); }
+.stat-icon-orange { background: rgba(247, 169, 79, 0.12); }
+.stat-icon-red { background: rgba(247, 95, 95, 0.12); }
+
+/* Información */
+.stat-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stat-card-valor {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  color: var(--text);
+  line-height: 1;
+}
+
+.stat-card-etiqueta {
+  font-size: 0.82rem;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+/* Cambio comparativo */
+.stat-card-cambio {
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--text3);
+  border-top: 1px solid var(--border);
+  padding-top: 0.65rem;
+}
