@@ -4,6 +4,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './src/config/database.js';
 import authRoutes from './src/routes/authRoutes.js';
+import categoryRoutes from './src/routes/categoryRoutes.js';
+import productRoutes from './src/routes/productRoutes.js';
 
 // Cargar variables de entorno desde .env
 dotenv.config();
@@ -29,6 +31,8 @@ connectDB();
 
 // RUTAS DE LA API
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
