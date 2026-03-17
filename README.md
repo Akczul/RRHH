@@ -1,11 +1,95 @@
-# RRHH
+#  RRHH - Sistema de Gestión de Recursos Humanos
 
-## Descripcion del Proyecto
+##  Descripción del Proyecto
 
-Este proyecto consiste en el desarrollo de una aplicacion web de tipo SPA (Single Page Application) orientada a la gestion de Recursos Humanos de una empresa. La aplicacion permitira administrar empleados, controlar asistencia y generar reportes, brindando una experiencia de usuario moderna, rapida y eficiente.
+Este proyecto es una **aplicación web moderna** para gestionar Recursos Humanos en una empresa. Con esta app puedes:
 
-El sistema esta disenado bajo una arquitectura cliente-servidor, donde el frontend desarrollado en Vue.js 3 se comunica con una API REST construida en Node.js con Express. La persistencia de datos se maneja mediante MySQL como motor de base de datos relacional y Sequelize como ORM, lo que garantiza integridad referencial y consultas eficientes sobre los datos del personal.
+-  Registrar y administrar empleados
+-  Controlar la asistencia diaria
+-  Generar reportes de personal
+-  Gestionar departamentos y cargos
 
-La aplicacion contempla dos tipos de usuarios: el administrador, que tiene acceso completo para registrar empleados, gestionar departamentos, cargos y registrar asistencia; y el empleado, que puede consultar su propia informacion y su historial de asistencia mensual. La autenticacion se implementa mediante JWT (JSON Web Tokens), asegurando que cada sesion sea segura y con permisos diferenciados segun el rol.
+La aplicación es una **SPA (Single Page Application)** con:
+- **Frontend**: Vue.js 3 (interfaz visual bonita y rápida)
+- **Backend**: Node.js + Express (lógica del negocio)
+- **Base de datos**: MongoDB (almacenamiento de datos)
 
-El proyecto se organiza en torno a dos epicas principales: la Gestion de Empleados, que cubre el registro, busqueda y filtrado del personal por nombre o departamento; y el Control de Asistencia, que permite registrar y monitorear las entradas, salidas y ausencias del personal de forma dia
+### Tipos de usuarios:
+- **Administrador**: Acceso total (crear empleados, reportes, gestionar sistema)
+- **Empleado**: Acceso limitado (ver su información y asistencia)
+
+---
+
+##  Arquitectura del Proyecto
+
+```
+RRHH/
+├── frontend/               ← Interfaz visual (Vue.js 3)
+├── backend/                ← API REST (Node.js + Express)
+│   ├── src/
+│   │   ├── models/        ← Modelos de datos
+│   │   ├── controllers/   ← Lógica de negocios
+│   │   ├── routes/        ← Endpoints de la API
+│   │   ├── middlewares/   ← Validaciones de seguridad
+│   │   └── config/        ← Configuraciones
+│   └── server.js          ← Archivo principal del servidor
+└── README.md
+```
+
+---
+
+##  Tecnologías Utilizadas
+
+### Frontend
+- Vue.js 3
+- Vite
+- Pinia (gestión de estado)
+
+### Backend
+- **Node.js**: Entorno JavaScript en servidor
+- **Express**: Framework para crear APIs REST
+- **MongoDB**: Base de datos NoSQL
+- **Mongoose**: ODM para MongoDB
+- **JWT**: Autenticación segura
+- **bcryptjs**: Encriptación de contraseñas
+
+### Seguridad
+- Autenticación con JWT
+- Contraseñas encriptadas
+- Cookies HTTP-only
+- CORS configurado
+
+---
+
+##  Cómo Ejecutar el Proyecto
+
+### Backend
+```bash
+cd backend
+npm install
+npm run dev
+```
+El backend se ejecutará en: `http://localhost:5000`
+
+Lee [backend/README.md](backend/README.md) para más detalles.
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+El frontend se ejecutará en: `http://localhost:5173`
+
+---
+
+##  Documentación
+
+- [Backend README](backend/README.md) - Instalación y uso del servidor
+- [Frontend README](frontend/README.md) - Interfaz visual
+
+---
+
+##  Equipo de Desarrollo
+
+Este proyecto fue desarrollado como parte del curso **Electiva Complementaria III** del Sexto Semestre
