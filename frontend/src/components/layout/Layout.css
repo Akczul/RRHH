@@ -1,0 +1,37 @@
+﻿/* ============================================================
+   Layout.css — Shell de la aplicacion autenticada
+   ============================================================ */
+
+/* ── Contenedor raiz del layout ── */
+.layout {
+  /* Display flex para colocar sidebar a la izquierda y main a la derecha */
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* ── Columna principal (todo excepto el sidebar) ── */
+.layout__main {
+  /* Desplazar a la derecha del sidebar */
+  margin-left: var(--sidebar-width);
+  /* Ocupar todo el ancho restante */
+  flex: 1;
+  /* Columna vertical: topbar arriba + contenido abajo */
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ── Area de contenido de la pagina ── */
+.layout__content {
+  /* Espacio superior para no quedar debajo de la topbar fija */
+  padding-top: var(--topbar-h);
+  /* Padding generoso del contenido */
+  padding: var(--topbar-h) 28px 32px;
+  /* Crecer para llenar el espacio disponible */
+  flex: 1;
+  /* Permitir scroll vertical del contenido */
+  overflow-y: auto;
+  /* Altura minima para scroll correcto */
+  min-height: calc(100vh - var(--topbar-h));
+}

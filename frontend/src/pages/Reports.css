@@ -1,0 +1,113 @@
+/* Reports.css */
+.reports-period {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.reports-period__label {
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.reports-period__val {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+/* ── Grid de reportes ── */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.report-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.report-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.report-card--blue::before   { background: var(--accent); }
+.report-card--green::before  { background: var(--accent2); }
+.report-card--orange::before { background: var(--accent3); }
+.report-card--red::before    { background: var(--danger); }
+.report-card--purple::before { background: #a78bfa; }
+
+.report-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.report-card__icon-wrap {
+  width: 48px; height: 48px;
+  border-radius: var(--radio-sm);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.report-card__content { flex: 1; }
+
+.report-card__meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.report-card__titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.report-card__desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.report-card__action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── Nota informativa ── */
+.reports-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radio-xs);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.reports-note__icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }

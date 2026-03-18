@@ -1,0 +1,138 @@
+/* Attendance.css */
+
+/* ── Resumen de hoy ── */
+.attend-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.attend-summary__item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-top: 3px solid transparent;
+  transition: box-shadow 0.2s;
+}
+
+.attend-summary__item:hover { box-shadow: var(--shadow); }
+
+.attend-summary__item--green  { border-top-color: var(--accent2); }
+.attend-summary__item--orange { border-top-color: var(--accent3); }
+.attend-summary__item--red    { border-top-color: var(--danger);  }
+
+.attend-summary__val {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.attend-summary__label {
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+/* ── Filtros historial ── */
+.attend-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.form-input--sm {
+  padding: 7px 10px;
+  font-size: 13px;
+  width: auto;
+}
+
+/* ── Calendario ── */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.cal-day-header {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  padding: 6px 0;
+  letter-spacing: 0.06em;
+}
+
+.cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radio-xs);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  cursor: default;
+  transition: transform 0.15s;
+  gap: 3px;
+}
+
+.cal-cell:hover { transform: scale(1.05); }
+
+.cal-cell--empty {
+  background: transparent;
+  border-color: transparent;
+}
+
+.cal-cell--presente { background: rgba(56,217,169,0.15); border-color: rgba(56,217,169,0.3); }
+.cal-cell--tardio   { background: rgba(247,169,79,0.15);  border-color: rgba(247,169,79,0.3); }
+.cal-cell--ausente  { background: rgba(247,95,95,0.15);   border-color: rgba(247,95,95,0.3);  }
+
+.cal-cell--today {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.cal-cell__num {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cal-cell__dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cal-cell--presente .cal-cell__dot { background: var(--accent2); }
+.cal-cell--tardio   .cal-cell__dot { background: var(--accent3); }
+.cal-cell--ausente  .cal-cell__dot { background: var(--danger);  }
+
+/* ── Leyenda ── */
+.cal-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text2);
+  align-items: center;
+}
+
+.cal-legend-dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  margin-right: 4px;
+}
+.cal-legend-dot--presente { background: rgba(56,217,169,0.7); }
+.cal-legend-dot--tardio   { background: rgba(247,169,79,0.7); }
+.cal-legend-dot--ausente  { background: rgba(247,95,95,0.7);  }
+.cal-legend-dot--empty    { background: var(--surface3); border: 1px solid var(--border); }

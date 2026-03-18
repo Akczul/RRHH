@@ -1,0 +1,86 @@
+﻿/* ============================================================
+   StatCard.css — Tarjeta de estadistica/metrica del Dashboard
+   ============================================================ */
+
+/* ── Tarjeta base ── */
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radio-lg);
+  padding: 22px 20px 18px;
+  position: relative;
+  overflow: hidden;
+  /* Lift effect al hacer hover */
+  transition: transform 0.20s ease, box-shadow 0.20s ease;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* ── Fila superior con icono y valor ── */
+.stat-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* Contenedor del icono */
+.stat-card__icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stat-card__icon { font-size: 20px; line-height: 1; }
+
+/* Valor numerico principal */
+.stat-card__value {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text);
+}
+
+/* Etiqueta descriptiva */
+.stat-card__label {
+  font-size: 12.5px;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+/* Linea de acento en la parte inferior */
+.stat-card__accent-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 0 0 var(--radio) var(--radio);
+}
+
+/* ── Variantes de color ── */
+.stat-card--blue .stat-card__icon-wrap { background: var(--accent-soft); }
+.stat-card--blue .stat-card__accent-line { background: var(--accent); }
+.stat-card--blue .stat-card__value { color: var(--accent); }
+
+.stat-card--green .stat-card__icon-wrap { background: var(--success-soft); }
+.stat-card--green .stat-card__accent-line { background: var(--success); }
+.stat-card--green .stat-card__value { color: var(--success); }
+
+.stat-card--orange .stat-card__icon-wrap { background: var(--warning-soft); }
+.stat-card--orange .stat-card__accent-line { background: var(--warning); }
+.stat-card--orange .stat-card__value { color: var(--warning); }
+
+.stat-card--red .stat-card__icon-wrap { background: var(--danger-soft); }
+.stat-card--red .stat-card__accent-line { background: var(--danger); }
+.stat-card--red .stat-card__value { color: var(--danger); }
+
+.stat-card--purple .stat-card__icon-wrap { background: var(--purple-soft); }
+.stat-card--purple .stat-card__accent-line { background: var(--purple); }
+.stat-card--purple .stat-card__value { color: var(--purple); }
