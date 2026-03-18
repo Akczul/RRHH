@@ -10,7 +10,7 @@ Este proyecto es una **aplicación web moderna** para gestionar Recursos Humanos
 -  Gestionar departamentos y cargos
 
 La aplicación es una **SPA (Single Page Application)** con:
-- **Frontend**: Vue.js 3 (interfaz visual bonita y rápida)
+- **Frontend**: React + Vite (interfaz visual bonita y rápida)
 - **Backend**: Node.js + Express (lógica del negocio)
 - **Base de datos**: MongoDB (almacenamiento de datos)
 
@@ -24,7 +24,7 @@ La aplicación es una **SPA (Single Page Application)** con:
 
 ```
 RRHH/
-├── frontend/               ← Interfaz visual (Vue.js 3)
+├── frontend/               ← Interfaz visual (React + Vite)
 ├── backend/                ← API REST (Node.js + Express)
 │   ├── src/
 │   │   ├── models/        ← Modelos de datos
@@ -41,7 +41,7 @@ RRHH/
 ##  Tecnologías Utilizadas
 
 ### Frontend
-- Vue.js 3
+- React
 - Vite
 - Pinia (gestión de estado)
 
