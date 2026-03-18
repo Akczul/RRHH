@@ -1,0 +1,80 @@
+﻿/* ============================================================
+   Alert.css — Estilos del componente Alert
+   Extiende y reemplaza los estilos planos de .alert en globals
+   ============================================================ */
+
+/* ── Sobreescribe el .alert base con estructura mas rica ── */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 13px 15px;
+  border-radius: var(--radio-sm);
+  border: 1px solid transparent;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  animation: fadeIn 0.2s ease;
+  position: relative;
+}
+
+/* ── Variantes de color ── */
+.alert--error   { background: var(--danger-soft);  border-color: rgba(244,63,94,0.35);   color: #ff758c; }
+.alert--success { background: var(--success-soft); border-color: rgba(6,214,160,0.3);    color: #06D6A0; }
+.alert--warning { background: var(--warning-soft); border-color: rgba(245,158,11,0.3);   color: #F59E0B; }
+.alert--info    { background: var(--accent-soft);  border-color: rgba(67,97,238,0.3);    color: #a5b8ff; }
+
+/* ── Icono de la alerta ── */
+.alert__icono {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+  margin-top: 1px;
+}
+
+/* ── Cuerpo de texto ── */
+.alert__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Titulo en negrita (opcional) */
+.alert__titulo {
+  font-weight: 700;
+  font-size: 13.5px;
+  display: block;
+}
+
+/* Mensaje principal */
+.alert__texto {
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0.92;
+}
+/* Si no hay titulo, el texto es el unico hijo y usa el weight del padre */
+.alert__cuerpo:only-child .alert__texto,
+.alert:not(:has(.alert__titulo)) .alert__texto {
+  font-weight: 500;
+}
+
+/* ── Boton de cerrar ── */
+.alert__cerrar {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity 0.15s, background 0.15s;
+  margin-left: auto;
+  align-self: flex-start;
+}
+.alert__cerrar:hover { opacity: 1; background: rgba(255,255,255,0.08); }
