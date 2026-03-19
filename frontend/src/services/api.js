@@ -117,6 +117,27 @@ export const logoutAPI = () =>
 export const obtenerPerfilAPI = () =>
   peticion('/auth/profile');
 
+/**
+ * Actualizar nombre y/o contraseña del usuario autenticado.
+ * @param {{ name?: string, password?: string }} datos
+ */
+export const actualizarPerfilAPI = (datos) =>
+  peticion('/auth/profile', {
+    method: 'PUT',
+    body: JSON.stringify(datos),
+  });
+
+/**
+ * Solicitar recuperacion de contrasena por email.
+ * El backend envia el correo con el enlace de restablecimiento.
+ * @param {string} email
+ */
+export const recuperarContrasenaAPI = (email) =>
+  peticion('/auth/recover', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+
 /* ============================================================
    DEPARTAMENTOS — mapeados al recurso /categories del backend
    Modelo: { _id, name, description, createdAt }
