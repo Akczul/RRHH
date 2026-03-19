@@ -1,12 +1,11 @@
 ﻿/* ============================================================
    RecoverPassword.jsx — Pagina de recuperacion de contrasena
-   No hay endpoint en el backend para esta funcionalidad.
-   Se muestra un formulario visual con mensaje informativo.
    ============================================================ */
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { recuperarContrasenaAPI } from '../services/api';
 import Button from '../components/ui/Button';
-import Alert  from '../components/ui/Alert';
+import Alert from '../components/ui/Alert';
 import './RecoverPassword.css';
 
 /* ── Icono de sobre ── */
@@ -26,29 +25,34 @@ const IcoArrowLeft = () => (
 );
 
 export default function RecoverPassword() {
-  /* Email ingresado por el usuario */
   const [email, setEmail] = useState('');
-  /* Estado de envio (simula carga) */
   const [enviando, setEnviando] = useState(false);
-  /* Mensaje de confirmacion (una vez enviado) */
   const [enviado, setEnviado] = useState(false);
+  const [error, setError] = useState('');
 
-  /* ── Manejo del envio del formulario ── */
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim()) return;
+
+    setError('');
     setEnviando(true);
 
-    /* Simulacion de envio (no hay endpoint en el backend) */
-    await new Promise(r => setTimeout(r, 1200));
-    setEnviando(false);
-    setEnviado(true);
+    try {
+      const respuesta = await recuperarContrasenaAPI(email.trim());
+      if (respuesta?.success) {
+        setEnviado(true);
+      } else {
+        throw new Error('No se pudo enviar la solicitud de recuperacion.');
+      }
+    } catch (err) {
+      setError(err.message || 'Error al enviar instrucciones de recuperacion.');
+    } finally {
+      setEnviando(false);
+    }
   };
 
   return (
     <div className="recover-page">
-
-      {/* ── Panel de branding (izquierdo) ── */}
       <div className="recover-brand">
         <div className="recover-brand__logo">
           <span className="recover-brand__dot" />
@@ -58,32 +62,25 @@ export default function RecoverPassword() {
           <h1 className="recover-brand__title">Recupera el acceso<br />a tu cuenta.</h1>
           <p className="recover-brand__sub">Te enviaremos instrucciones para restablecer tu contrasena de forma segura.</p>
         </div>
-        {/* Decoraciones de fondo */}
         <div className="recover-brand__circle recover-brand__circle--1" />
         <div className="recover-brand__circle recover-brand__circle--2" />
       </div>
 
-      {/* ── Panel del formulario (derecho) ── */}
       <div className="recover-form-panel">
         <div className="recover-form-wrap">
-
-          {/* Enlace de regreso al login */}
           <Link to="/login" className="recover-back">
             <IcoArrowLeft /> Volver al inicio de sesion
           </Link>
 
-          {/* Icono decorativo */}
           <div className="recover-icon">
             <IcoMail />
           </div>
 
-          {/* Titulo del formulario */}
           <h2 className="recover-title">Olvide mi contrasena</h2>
           <p className="recover-desc">
             Ingresa tu correo electronico y te enviaremos un enlace para restablecer tu contrasena.
           </p>
 
-          {/* Vista de confirmacion (despues de enviar) */}
           {enviado ? (
             <div className="recover-success">
               <div className="recover-success__icon">✅</div>
@@ -92,39 +89,38 @@ export default function RecoverPassword() {
                 Si <strong>{email}</strong> esta registrado, recibiras las instrucciones en breve.
                 Revisa tu carpeta de spam si no encuentras el correo.
               </p>
-              <Alert tipo="info" style={{ marginTop: 16 }}>
-                Esta funcionalidad aun no esta habilitada en el servidor. Contacta al administrador.
-              </Alert>
               <Link to="/login" className="recover-login-link">
                 Regresar al inicio de sesion
               </Link>
             </div>
           ) : (
-            /* Formulario de recuperacion */
-            <form className="recover-form" onSubmit={handleSubmit}>
-              <div className="field">
-                <label className="field__label" htmlFor="rec-email">Correo electronico</label>
-                <input
-                  id="rec-email"
-                  type="email"
-                  className="field__input"
-                  placeholder="tucorreo@empresa.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                  autoFocus
-                />
-              </div>
+            <>
+              {error && (
+                <Alert tipo="error" onCerrar={() => setError('')}>
+                  {error}
+                </Alert>
+              )}
 
-              <Button type="submit" variante="primary" fullWidth cargando={enviando}>
-                Enviar instrucciones
-              </Button>
+              <form className="recover-form" onSubmit={handleSubmit}>
+                <div className="field">
+                  <label className="field__label" htmlFor="rec-email">Correo electronico</label>
+                  <input
+                    id="rec-email"
+                    type="email"
+                    className="field__input"
+                    placeholder="tucorreo@empresa.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoFocus
+                  />
+                </div>
 
-              {/* Aviso de funcionalidad sin backend */}
-              <Alert tipo="warning" className="recover-warn">
-                Esta funcion aun no tiene soporte en el servidor. Contacta al administrador del sistema.
-              </Alert>
-            </form>
+                <Button type="submit" variante="primary" fullWidth cargando={enviando}>
+                  Enviar instrucciones
+                </Button>
+              </form>
+            </>
           )}
         </div>
       </div>
