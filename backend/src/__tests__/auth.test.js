@@ -1,0 +1,139 @@
+import request from 'supertest';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import connectDB from '../config/database.js';
+import authRoutes from '../routes/authRoutes.js';
+import categoryRoutes from '../routes/categoryRoutes.js';
+import productRoutes from '../routes/productRoutes.js';
+import User from '../models/User.js';
+import Category from '../models/Category.js';
+import Product from '../models/Product.js';
+
+// Cargar variables de entorno
+dotenv.config();
+
+// Crear app de prueba
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
+
+// Rutas
+app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
+
+// Conectar a BD de prueba antes de las pruebas
+beforeAll(async () => {
+  try {
+    // Usar una BD separada para tests
+    const testDbUri = process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/rrhh_test';
+    await mongoose.connect(testDbUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+  } catch (error) {
+    console.error('Error conectando a la BD de prueba:', error);
+  }
+});
+
+// Limpiar BD después de las pruebas
+afterAll(async () => {
+  try {
+    await User.deleteMany({});
+    await Category.deleteMany({});
+    await Product.deleteMany({});
+    await mongoose.disconnect();
+  } catch (error) {
+    console.error('Error limpiando BD:', error);
+  }
+});
+
+// Limpiar usuarios después de cada test
+afterEach(async () => {
+  await User.deleteMany({});
+});
+
+describe('Autenticación - POST /api/auth/register', () => {
+  test('Registro exitoso devuelve 201', async () => {
+    const response = await request(app)
+      .post('/api/auth/register')
+      .send({
+        name: 'Juan Pérez',
+        email: 'juan@example.com',
+        password: 'Password123'
+      })
+      .expect(201);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.user).toBeDefined();
+    expect(response.body.user.email).toBe('juan@example.com');
+  });
+
+  test('Email duplicado devuelve 400', async () => {
+    // Crear primer usuario
+    await request(app)
+      .post('/api/auth/register')
+      .send({
+        name: 'Juan Pérez',
+        email: 'juan@example.com',
+        password: 'Password123'
+      });
+
+    // Intentar crear otro con el mismo email
+    const response = await request(app)
+      .post('/api/auth/register')
+      .send({
+        name: 'Otro Usuario',
+        email: 'juan@example.com',
+        password: 'Password123'
+      })
+      .expect(400);
+
+    expect(response.body.success).toBe(false);
+  });
+});
+
+describe('Autenticación - POST /api/auth/login', () => {
+  beforeEach(async () => {
+    // Crear un usuario para login
+    await request(app)
+      .post('/api/auth/register')
+      .send({
+        name: 'Juan Pérez',
+        email: 'juan@example.com',
+        password: 'Password123'
+      });
+  });
+
+  test('Credenciales correctas devuelven 200 con cookie', async () => {
+    const response = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'juan@example.com',
+        password: 'Password123'
+      })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.headers['set-cookie']).toBeDefined();
+  });
+
+  test('Credenciales incorrectas devuelven 401', async () => {
+    const response = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'juan@example.com',
+        password: 'WrongPassword'
+      })
+      .expect(401);
+
+    expect(response.body.success).toBe(false);
+  });
+});

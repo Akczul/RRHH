@@ -6,6 +6,7 @@ import connectDB from './src/config/database.js';
 import authRoutes from './src/routes/authRoutes.js';
 import categoryRoutes from './src/routes/categoryRoutes.js';
 import productRoutes from './src/routes/productRoutes.js';
+import reportRoutes from './src/routes/reportRoutes.js';
 
 // Cargar variables de entorno desde .env
 dotenv.config();
@@ -33,6 +34,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {

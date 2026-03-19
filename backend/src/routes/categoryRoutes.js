@@ -6,13 +6,23 @@ import {
   updateCategory,
   deleteCategory
 } from '../controllers/categoryController.js';
+import { protect, authorize } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', createCategory);
-router.get('/', getCategories);
-router.get('/:id', getCategoryById);
-router.put('/:id', updateCategory);
-router.delete('/:id', deleteCategory);
+// GET: Listar categorías (requiere autenticación)
+router.get('/', protect, getCategories);
+
+// GET por ID: Obtener categoría específica (requiere autenticación)
+router.get('/:id', protect, getCategoryById);
+
+// POST: Crear categoría (requiere ser admin)
+router.post('/', protect, authorize(['admin']), createCategory);
+
+// PUT: Actualizar categoría (requiere ser admin)
+router.put('/:id', protect, authorize(['admin']), updateCategory);
+
+// DELETE: Eliminar categoría (requiere ser admin)
+router.delete('/:id', protect, authorize(['admin']), deleteCategory);
 
 export default router;

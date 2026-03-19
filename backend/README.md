@@ -178,29 +178,65 @@ Respuesta exitosa (200):
 - `categoryId` (ObjectId, requerido): referencia a `Category`.
 - `createdAt` (Date): fecha de creacion automatica.
 
-### Relacion entre modelos
+### Department
 
-- `Category (1) -> (N) Product`.
-- Una categoria puede tener muchos productos.
-- Un producto pertenece a una sola categoria.
+- `name` (String, requerido, único): nombre del departamento (ej: "Recursos Humanos", "IT").
+- `description` (String, opcional): descripción del departamento.
+- `createdAt` (Date): fecha de creación automática.
+
+### Employee
+
+- `userId` (ObjectId, requerido): referencia al usuario (User).
+- `position` (String, requerido): cargo del empleado (ej: "Developer", "Manager").
+- `departmentId` (ObjectId, requerido): referencia al departamento (Department).
+- `salary` (Number, requerido): salario del empleado (mínimo 0).
+- `hireDate` (Date): fecha de contratación.
+- `isActive` (Boolean): indica si el empleado sigue activo (default: true).
+- `createdAt` (Date): fecha de creación automática.
+
+### Attendance
+
+- `employeeId` (ObjectId, requerido): referencia al empleado (Employee).
+- `date` (Date): fecha de registro de asistencia.
+- `status` (String, enum): estado de asistencia: `'present'`, `'absent'`, `'late'`, `'leave'`.
+- `notes` (String, opcional): notas adicionales.
+- `createdAt` (Date): fecha de creación automática.
+- **Índice único**: `(employeeId, date)` para evitar duplicados.
+
+### Relación entre modelos
+
+- `User (1) -> (1) Employee`: Un usuario tiene un perfil de empleado.
+- `Department (1) -> (N) Employee`: Un departamento puede tener muchos empleados.
+- `Employee (1) -> (N) Attendance`: Un empleado puede tener muchos registros de asistencia.
+- `Category (1) -> (N) Product`: Una categoría puede tener muchos productos.
+- `Product (N) -> (1) Category`: Un producto pertenece a una categoría.
 
 ## Nuevos Endpoints
 
 ### Categories (`/api/categories`)
+**Requiere autenticación (token en cookie)**
 
-- `POST /api/categories`: crear categoria.
-- `GET /api/categories`: listar categorias.
-- `GET /api/categories/:id`: obtener categoria por ID.
-- `PUT /api/categories/:id`: actualizar categoria.
-- `DELETE /api/categories/:id`: eliminar categoria.
+- `GET /api/categories`: listar categorías.
+- `GET /api/categories/:id`: obtener categoría por ID.
+- `POST /api/categories`: crear categoría (solo **admin**).
+- `PUT /api/categories/:id`: actualizar categoría (solo **admin**).
+- `DELETE /api/categories/:id`: eliminar categoría (solo **admin**).
 
 ### Products (`/api/products`)
+**Requiere autenticación (token en cookie)**
 
-- `POST /api/products`: crear producto.
-- `GET /api/products`: listar productos.
+- `GET /api/products`: listar productos (con categoría populada).
 - `GET /api/products/:id`: obtener producto por ID.
-- `PUT /api/products/:id`: actualizar producto.
-- `DELETE /api/products/:id`: eliminar producto.
+- `POST /api/products`: crear producto (solo **admin**).
+- `PUT /api/products/:id`: actualizar producto (solo **admin**).
+- `DELETE /api/products/:id`: eliminar producto (solo **admin**).
+
+### Reports (`/api/reports`)
+**Requiere autenticación + rol admin**
+
+- `GET /api/reports/attendance/monthly?month=3&year=2024`: Obtener reporte de asistencia mensual de todos los empleados con totales por estado.
+- `GET /api/reports/headcount`: Obtener cantidad total de empleados activos agrupados por departamento.
+- `GET /api/reports/employee/:employeeId/summary`: Obtener resumen individual del empleado (posición, departamento, días trabajados en el mes actual).
 
 ## Ejemplos de peticiones y respuestas
 
@@ -303,7 +339,161 @@ Response `200`:
 }
 ```
 
-##  Tecnologías utilizadas
+### 4) Reporte de asistencia mensual
+
+Request:
+
+```http
+GET /api/reports/attendance/monthly?month=3&year=2024
+Cookie: token=<jwt_token>
+```
+
+Response `200`:
+
+```json
+{
+  "success": true,
+  "message": "Reporte de asistencia para 3/2024",
+  "month": 3,
+  "year": 2024,
+  "totalEmployees": 5,
+  "data": [
+    {
+      "employeeId": "67d7508d0f9a0d0f40e8f333",
+      "name": "Juan Pérez",
+      "email": "juan@company.com",
+      "position": "Developer",
+      "department": "IT",
+      "present": 18,
+      "absent": 1,
+      "late": 2,
+      "leave": 0,
+      "totalDays": 21
+    }
+  ]
+}
+```
+
+### 5) Reporte de cantidad de empleados
+
+Request:
+
+```http
+GET /api/reports/headcount
+Cookie: token=<jwt_token>
+```
+
+Response `200`:
+
+```json
+{
+  "success": true,
+  "message": "Reporte de cantidad de empleados por departamento",
+  "totalEmployees": 12,
+  "departments": [
+    {
+      "departmentId": "67d7503d0f9a0d0f40e8f444",
+      "departmentName": "IT",
+      "headcount": 5
+    },
+    {
+      "departmentId": "67d7503d0f9a0d0f40e8f555",
+      "departmentName": "HR",
+      "headcount": 7
+    }
+  ]
+}
+```
+
+### 6) Resumen de empleado
+
+Request:
+
+```http
+GET /api/reports/employee/67d7508d0f9a0d0f40e8f333/summary
+Cookie: token=<jwt_token>
+```
+
+Response `200`:
+
+```json
+{
+  "success": true,
+  "message": "Resumen del empleado",
+  "employee": {
+    "employeeId": "67d7508d0f9a0d0f40e8f333",
+    "name": "Juan Pérez",
+    "email": "juan@company.com",
+    "position": "Developer",
+    "department": "IT",
+    "salary": 3500,
+    "hireDate": "2023-01-15T00:00:00.000Z",
+    "isActive": true,
+    "currentMonthAttendance": {
+      "present": 18,
+      "absent": 1,
+      "late": 2,
+      "leave": 0,
+      "total": 21
+    }
+  }
+}
+```
+    }
+  ]
+}
+```
+
+##  Testing
+
+Este proyecto incluye pruebas de integración que validan todas las rutas del backend.
+
+### Configurar la BD de prueba
+
+Antes de ejecutar los tests, configura una base de datos separada en tu archivo `.env`:
+
+```
+MONGO_URI=mongodb://localhost:27017/rrhh_db
+MONGO_URI_TEST=mongodb://localhost:27017/rrhh_test
+JWT_SECRET=tu_clave_secreta_super_segura
+PORT=5000
+FRONTEND_URL=http://localhost:5173
+```
+
+### Ejecutar tests
+
+```bash
+npm test
+```
+
+Esto ejecutará todos los tests en `src/__tests__/` con salida detallada.
+
+### Cobertura de tests
+
+Los tests cubren:
+
+**auth.test.js:**
+- ✅ POST `/api/auth/register` — registro exitoso devuelve 201
+- ✅ POST `/api/auth/register` — email duplicado devuelve 400
+- ✅ POST `/api/auth/login` — credenciales correctas devuelven 200 con cookie
+- ✅ POST `/api/auth/login` — credenciales incorrectas devuelven 401
+
+**categories.test.js:**
+- ✅ GET `/api/categories` — sin autenticación devuelve 401
+- ✅ GET `/api/categories` — autenticado devuelve 200 con array
+- ✅ POST `/api/categories` — como `employee` devuelve 403
+- ✅ POST `/api/categories` — como `admin` devuelve 201
+- ✅ DELETE `/api/categories/:id` — como `admin` devuelve 200
+
+**products.test.js:**
+- ✅ GET `/api/products` — autenticado devuelve 200 con productos y categoría populada
+- ✅ POST `/api/products` — como `admin` con `categoryId` válido devuelve 201
+- ✅ POST `/api/products` — con `categoryId` inexistente devuelve 400
+- ✅ PUT `/api/products/:id` — como `employee` devuelve 403
+
+### Nota sobre limpieza
+
+Los tests limpian automáticamente la base de datos de prueba después de cada suite, asegurando que no haya datos contaminados entre ejecuciones.
 
 | Tecnología | ¿Para qué sirve? |
 |-----------|-----------------|

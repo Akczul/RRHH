@@ -29,7 +29,7 @@ export const createProduct = async (req, res) => {
 
     const categoryExists = await Category.exists({ _id: categoryId });
     if (!categoryExists) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message: 'Categoria no encontrada'
       });
