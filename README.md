@@ -22,6 +22,9 @@ La aplicación es una **SPA (Single Page Application)** con:
 
 ##  Arquitectura del Proyecto
 
+> **Nota importante:** El backend oficial y unico del proyecto es la carpeta `backend/`.
+> Cualquier carpeta antigua o duplicada fue eliminada para evitar conflictos futuros.
+
 ```
 RRHH/
 ├── frontend/               ← Interfaz visual (React + Vite)

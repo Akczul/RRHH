@@ -1,5 +1,8 @@
 # Backend - API de RRHH
 
+> Este es el backend unico y oficial del proyecto RRHH.
+> Ejecuta siempre el servidor desde esta carpeta para evitar inconsistencias.
+
 ## ¿Qué se hizo en esta fase?
 
 Este backend es la **base del proyecto RRHH**. Aquí hemos implementado:
