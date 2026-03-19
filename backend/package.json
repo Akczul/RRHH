@@ -1,5 +1,5 @@
 {
-  "name": "rrhh-backend",
+  "name": "rrhh-backend-api",
   "version": "1.0.0",
   "description": "Backend API para proyecto RRHH con Node.js, Express y MongoDB",
   "main": "server.js",
