@@ -168,3 +168,25 @@ describe('Categorías - DELETE /api/categories/:id', () => {
     expect(deleted).toBeNull();
   });
 });
+
+describe('Categorías - PUT /api/categories/:id', () => {
+  test('Como admin actualiza categoría y devuelve 200', async () => {
+    const category = await Category.create({
+      name: 'Categoria Original',
+      description: 'Descripcion original'
+    });
+
+    const response = await request(app)
+      .put(`/api/categories/${category._id}`)
+      .set('Cookie', adminToken)
+      .send({
+        name: 'Categoria Actualizada',
+        description: 'Descripcion actualizada'
+      })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.category.name).toBe('Categoria Actualizada');
+    expect(response.body.category.description).toBe('Descripcion actualizada');
+  });
+});

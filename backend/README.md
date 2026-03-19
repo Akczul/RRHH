@@ -83,6 +83,39 @@ Deberías ver algo como:
  URL: http://localhost:5000
 ```
 
+## Pruebas Automatizadas
+
+Este backend incluye pruebas de integración con Jest + Supertest sobre MongoDB local.
+
+### Requisitos para correr tests
+
+1. Tener MongoDB corriendo en local.
+2. Tener archivo `.env` configurado con al menos:
+
+```env
+MONGO_URI=mongodb://localhost:27017/rrhh_db
+MONGO_URI_TEST=mongodb://localhost:27017/rrhh_test
+JWT_SECRET=token_secreto_xd
+PORT=5000
+FRONTEND_URL=http://localhost:5173
+```
+
+### Ejecutar la suite completa
+
+```bash
+cd backend
+npm test
+```
+
+### Cobertura actual de pruebas
+
+- `auth.test.js`: registro, login, credenciales inválidas.
+- `categories.test.js`: acceso autenticado y autorización por rol (`employee`/`admin`).
+- `products.test.js`: CRUD protegido por rol y validaciones de categoría.
+- `attendance.test.js`: checkin/checkout, restricciones por rol, consultas admin por empleado y fecha.
+- `reports.test.js`: seguridad admin y coherencia de reportes con el nuevo dominio RRHH.
+- `rrhhModels.test.js`: relaciones de modelos RRHH, `status` por defecto e índices únicos.
+
 ##  Endpoints de la API
 
 Todas las peticiones van a `http://localhost:5000/api/auth`
@@ -180,36 +213,53 @@ Respuesta exitosa (200):
 
 ### Department
 
-- `name` (String, requerido, único): nombre del departamento (ej: "Recursos Humanos", "IT").
+- `name` (String, requerido): nombre del departamento (ej: "Recursos Humanos", "IT").
 - `description` (String, opcional): descripción del departamento.
+- `createdAt` (Date): fecha de creación automática.
+
+### Position
+
+- `title` (String, requerido): nombre del cargo (ej: "Desarrollador Backend").
+- `department` (ObjectId, requerido): referencia al departamento (`Department`).
 - `createdAt` (Date): fecha de creación automática.
 
 ### Employee
 
-- `userId` (ObjectId, requerido): referencia al usuario (User).
-- `position` (String, requerido): cargo del empleado (ej: "Developer", "Manager").
-- `departmentId` (ObjectId, requerido): referencia al departamento (Department).
-- `salary` (Number, requerido): salario del empleado (mínimo 0).
+- `userId` (ObjectId, requerido, único): referencia al usuario (User).
+- `position` (ObjectId, requerido): referencia al cargo (`Position`).
+- `department` (ObjectId, requerido): referencia al departamento (`Department`).
 - `hireDate` (Date): fecha de contratación.
-- `isActive` (Boolean): indica si el empleado sigue activo (default: true).
+- `status` (String, enum): estado del empleado: `'active'`, `'inactive'` (default: `'active'`).
 - `createdAt` (Date): fecha de creación automática.
 
 ### Attendance
 
 - `employeeId` (ObjectId, requerido): referencia al empleado (Employee).
-- `date` (Date): fecha de registro de asistencia.
-- `status` (String, enum): estado de asistencia: `'present'`, `'absent'`, `'late'`, `'leave'`.
-- `notes` (String, opcional): notas adicionales.
+- `date` (Date, requerido): fecha de registro de asistencia (día base).
+- `checkIn` (Date, opcional): hora de entrada.
+- `checkOut` (Date, opcional): hora de salida.
+- `status` (String, enum): estado de asistencia: `'present'`, `'absent'`, `'late'`.
 - `createdAt` (Date): fecha de creación automática.
 - **Índice único**: `(employeeId, date)` para evitar duplicados.
 
 ### Relación entre modelos
 
 - `User (1) -> (1) Employee`: Un usuario tiene un perfil de empleado.
+- `Department (1) -> (N) Position`: Un departamento puede tener muchos cargos.
+- `Position (1) -> (N) Employee`: Un cargo puede tener muchos empleados asociados.
 - `Department (1) -> (N) Employee`: Un departamento puede tener muchos empleados.
 - `Employee (1) -> (N) Attendance`: Un empleado puede tener muchos registros de asistencia.
 - `Category (1) -> (N) Product`: Una categoría puede tener muchos productos.
 - `Product (N) -> (1) Category`: Un producto pertenece a una categoría.
+
+## Middleware de roles
+
+- `protect`: valida sesión y agrega `req.user` con `id` y `role`.
+- `authorize(...roles)`: permite acceso solo si el rol de `req.user.role` está dentro de los roles permitidos.
+- Aplicado a escritura de categorías y productos:
+  - `POST /api/categories`, `PUT /api/categories/:id`, `DELETE /api/categories/:id`
+  - `POST /api/products`, `PUT /api/products/:id`, `DELETE /api/products/:id`
+- Los endpoints `GET` de categorías y productos siguen disponibles para cualquier usuario autenticado.
 
 ## Nuevos Endpoints
 
@@ -237,6 +287,13 @@ Respuesta exitosa (200):
 - `GET /api/reports/attendance/monthly?month=3&year=2024`: Obtener reporte de asistencia mensual de todos los empleados con totales por estado.
 - `GET /api/reports/headcount`: Obtener cantidad total de empleados activos agrupados por departamento.
 - `GET /api/reports/employee/:employeeId/summary`: Obtener resumen individual del empleado (posición, departamento, días trabajados en el mes actual).
+
+### Attendance (`/api/attendance`)
+
+- `POST /api/attendance/checkin`: registrar entrada del empleado autenticado.
+- `PUT /api/attendance/checkout`: registrar salida del empleado autenticado.
+- `GET /api/attendance/:employeeId`: historial de asistencia por empleado (solo **admin**).
+- `GET /api/attendance/date/:date`: asistencia de todos los empleados por fecha `YYYY-MM-DD` (solo **admin**).
 
 ## Ejemplos de peticiones y respuestas
 
@@ -367,7 +424,6 @@ Response `200`:
       "present": 18,
       "absent": 1,
       "late": 2,
-      "leave": 0,
       "totalDays": 21
     }
   ]

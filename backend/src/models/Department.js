@@ -5,8 +5,7 @@ const departmentSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'Por favor ingresa el nombre del departamento'],
-      trim: true,
-      unique: true
+      trim: true
     },
     description: {
       type: String,

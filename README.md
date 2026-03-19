@@ -46,7 +46,8 @@ RRHH/
 ### Frontend
 - React
 - Vite
-- Pinia (gestión de estado)
+- Context API + Hooks personalizados
+- React Router
 
 ### Backend
 - **Node.js**: Entorno JavaScript en servidor
@@ -73,6 +74,12 @@ npm install
 npm run dev
 ```
 El backend se ejecutará en: `http://localhost:5000`
+
+Pruebas backend:
+```bash
+cd backend
+npm test
+```
 
 Lee [backend/README.md](backend/README.md) para más detalles.
 

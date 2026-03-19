@@ -5,31 +5,28 @@ const employeeSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: true,
+      unique: true
     },
     position: {
-      type: String,
-      required: [true, 'Por favor ingresa el cargo del empleado'],
-      trim: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Position',
+      required: [true, 'Por favor asigna un cargo']
     },
-    departmentId: {
+    department: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Department',
       required: [true, 'Por favor asigna un departamento']
-    },
-    salary: {
-      type: Number,
-      required: [true, 'Por favor ingresa el salario'],
-      min: 0
     },
     hireDate: {
       type: Date,
       required: [true, 'Por favor ingresa la fecha de contratación'],
       default: Date.now
     },
-    isActive: {
-      type: Boolean,
-      default: true
+    status: {
+      type: String,
+      enum: ['active', 'inactive'],
+      default: 'active'
     },
     createdAt: {
       type: Date,

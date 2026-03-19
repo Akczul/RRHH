@@ -4,13 +4,14 @@ import {
   getHeadcountReport,
   getEmployeeSummary
 } from '../controllers/reportController.js';
-import { protect, authorize } from '../middlewares/authMiddleware.js';
+import { protect } from '../middlewares/authMiddleware.js';
+import { authorize } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
 // Todas las rutas de reportes requieren autenticación + rol de admin
 router.use(protect);
-router.use(authorize(['admin']));
+router.use(authorize('admin'));
 
 // Reporte de asistencia mensual
 router.get('/attendance/monthly', getMonthlyAttendanceReport);

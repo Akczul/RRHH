@@ -182,4 +182,47 @@ describe('Productos - PUT /api/products/:id', () => {
     expect(response.body.success).toBe(false);
     expect(response.body.message).toContain('permiso');
   });
+
+  test('Como admin actualiza producto y devuelve 200', async () => {
+    const product = await Product.create({
+      name: 'Producto Original',
+      description: 'Descripcion original',
+      price: 300,
+      categoryId: testCategory._id
+    });
+
+    const response = await request(app)
+      .put(`/api/products/${product._id}`)
+      .set('Cookie', adminToken)
+      .send({
+        name: 'Producto Actualizado',
+        price: 450
+      })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.product.name).toBe('Producto Actualizado');
+    expect(response.body.product.price).toBe(450);
+  });
+});
+
+describe('Productos - DELETE /api/products/:id', () => {
+  test('Como admin elimina producto y devuelve 200', async () => {
+    const product = await Product.create({
+      name: 'Producto para eliminar',
+      description: 'Test',
+      price: 250,
+      categoryId: testCategory._id
+    });
+
+    const response = await request(app)
+      .delete(`/api/products/${product._id}`)
+      .set('Cookie', adminToken)
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+
+    const deleted = await Product.findById(product._id);
+    expect(deleted).toBeNull();
+  });
 });

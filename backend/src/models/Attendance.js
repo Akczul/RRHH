@@ -9,18 +9,18 @@ const attendanceSchema = new mongoose.Schema(
     },
     date: {
       type: Date,
-      required: [true, 'Por favor ingresa la fecha'],
-      default: Date.now
+      required: [true, 'Por favor ingresa la fecha']
+    },
+    checkIn: {
+      type: Date
+    },
+    checkOut: {
+      type: Date
     },
     status: {
       type: String,
-      enum: ['present', 'absent', 'late', 'leave'],
+      enum: ['present', 'absent', 'late'],
       required: [true, 'Por favor especifica el estado']
-    },
-    notes: {
-      type: String,
-      trim: true,
-      default: ''
     },
     createdAt: {
       type: Date,

@@ -7,6 +7,7 @@ import authRoutes from './src/routes/authRoutes.js';
 import categoryRoutes from './src/routes/categoryRoutes.js';
 import productRoutes from './src/routes/productRoutes.js';
 import reportRoutes from './src/routes/reportRoutes.js';
+import attendanceRoutes from './src/routes/attendanceRoutes.js';
 
 // Cargar variables de entorno desde .env
 dotenv.config();
@@ -35,6 +36,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {

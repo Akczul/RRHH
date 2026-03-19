@@ -33,9 +33,10 @@ export const getMonthlyAttendanceReport = async (req, res) => {
     const endDate = new Date(yearNum, monthNum, 0, 23, 59, 59, 999);
 
     // Obtener todos los empleados activos
-    const employees = await Employee.find({ isActive: true })
+    const employees = await Employee.find({ status: 'active' })
       .populate('userId', 'name email')
-      .populate('departmentId', 'name')
+      .populate('department', 'name')
+      .populate('position', 'title')
       .sort({ hireDate: -1 });
 
     // Para cada empleado, obtener su asistencia del mes
@@ -50,18 +51,15 @@ export const getMonthlyAttendanceReport = async (req, res) => {
         const present = attendance.filter(a => a.status === 'present').length;
         const absent = attendance.filter(a => a.status === 'absent').length;
         const late = attendance.filter(a => a.status === 'late').length;
-        const leave = attendance.filter(a => a.status === 'leave').length;
-
         return {
           employeeId: employee._id,
           name: employee.userId?.name,
           email: employee.userId?.email,
-          position: employee.position,
-          department: employee.departmentId?.name,
+          position: employee.position?.title,
+          department: employee.department?.name,
           present,
           absent,
           late,
-          leave,
           totalDays: attendance.length
         };
       })
@@ -94,8 +92,8 @@ export const getHeadcountReport = async (req, res) => {
     const report = await Promise.all(
       departments.map(async (dept) => {
         const employeeCount = await Employee.countDocuments({
-          departmentId: dept._id,
-          isActive: true
+          department: dept._id,
+          status: 'active'
         });
 
         return {
@@ -142,7 +140,8 @@ export const getEmployeeSummary = async (req, res) => {
     // Obtener el empleado
     const employee = await Employee.findById(employeeId)
       .populate('userId', 'name email')
-      .populate('departmentId', 'name');
+      .populate('department', 'name')
+      .populate('position', 'title');
 
     if (!employee) {
       return res.status(404).json({
@@ -165,8 +164,6 @@ export const getEmployeeSummary = async (req, res) => {
     const present = monthlyAttendance.filter(a => a.status === 'present').length;
     const absent = monthlyAttendance.filter(a => a.status === 'absent').length;
     const late = monthlyAttendance.filter(a => a.status === 'late').length;
-    const leave = monthlyAttendance.filter(a => a.status === 'leave').length;
-
     return res.json({
       success: true,
       message: 'Resumen del empleado',
@@ -174,16 +171,14 @@ export const getEmployeeSummary = async (req, res) => {
         employeeId: employee._id,
         name: employee.userId?.name,
         email: employee.userId?.email,
-        position: employee.position,
-        department: employee.departmentId?.name,
-        salary: employee.salary,
+        position: employee.position?.title,
+        department: employee.department?.name,
         hireDate: employee.hireDate,
-        isActive: employee.isActive,
+        status: employee.status,
         currentMonthAttendance: {
           present,
           absent,
           late,
-          leave,
           total: monthlyAttendance.length
         }
       }
