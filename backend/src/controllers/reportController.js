@@ -1,0 +1,198 @@
+import mongoose from 'mongoose';
+import Employee from '../models/Employee.js';
+import Attendance from '../models/Attendance.js';
+import Department from '../models/Department.js';
+
+// GET /api/reports/attendance/monthly?month=3&year=2024
+// Retorna asistencia mensual de todos los empleados
+export const getMonthlyAttendanceReport = async (req, res) => {
+  try {
+    const { month, year } = req.query;
+
+    // Validar que se proporcione month y year
+    if (!month || !year) {
+      return res.status(400).json({
+        success: false,
+        message: 'Por favor proporciona "month" y "year" como parámetros de query'
+      });
+    }
+
+    // Validar que sean números válidos
+    const monthNum = parseInt(month);
+    const yearNum = parseInt(year);
+
+    if (isNaN(monthNum) || isNaN(yearNum) || monthNum < 1 || monthNum > 12 || yearNum < 2000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Month debe ser 1-12 y year debe ser un año válido'
+      });
+    }
+
+    // Crear rango de fechas para el mes especificado
+    const startDate = new Date(yearNum, monthNum - 1, 1);
+    const endDate = new Date(yearNum, monthNum, 0, 23, 59, 59, 999);
+
+    // Obtener todos los empleados activos
+    const employees = await Employee.find({ isActive: true })
+      .populate('userId', 'name email')
+      .populate('departmentId', 'name')
+      .sort({ hireDate: -1 });
+
+    // Para cada empleado, obtener su asistencia del mes
+    const report = await Promise.all(
+      employees.map(async (employee) => {
+        const attendance = await Attendance.find({
+          employeeId: employee._id,
+          date: { $gte: startDate, $lte: endDate }
+        });
+
+        // Contar por estado
+        const present = attendance.filter(a => a.status === 'present').length;
+        const absent = attendance.filter(a => a.status === 'absent').length;
+        const late = attendance.filter(a => a.status === 'late').length;
+        const leave = attendance.filter(a => a.status === 'leave').length;
+
+        return {
+          employeeId: employee._id,
+          name: employee.userId?.name,
+          email: employee.userId?.email,
+          position: employee.position,
+          department: employee.departmentId?.name,
+          present,
+          absent,
+          late,
+          leave,
+          totalDays: attendance.length
+        };
+      })
+    );
+
+    return res.json({
+      success: true,
+      message: `Reporte de asistencia para ${monthNum}/${yearNum}`,
+      month: monthNum,
+      year: yearNum,
+      totalEmployees: report.length,
+      data: report
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error generando reporte de asistencia mensual',
+      error: error.message
+    });
+  }
+};
+
+// GET /api/reports/headcount
+// Retorna total de empleados activos agrupados por departamento
+export const getHeadcountReport = async (req, res) => {
+  try {
+    // Obtener todos los departamentos con sus empleados activos
+    const departments = await Department.find().sort({ name: 1 });
+
+    const report = await Promise.all(
+      departments.map(async (dept) => {
+        const employeeCount = await Employee.countDocuments({
+          departmentId: dept._id,
+          isActive: true
+        });
+
+        return {
+          departmentId: dept._id,
+          departmentName: dept.name,
+          headcount: employeeCount
+        };
+      })
+    );
+
+    // Filtrar solo departamentos que tienen empleados
+    const departmentsWithEmployees = report.filter(d => d.headcount > 0);
+    const totalEmployees = departmentsWithEmployees.reduce((sum, d) => sum + d.headcount, 0);
+
+    return res.json({
+      success: true,
+      message: 'Reporte de cantidad de empleados por departamento',
+      totalEmployees,
+      departments: departmentsWithEmployees
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error generando reporte de cantidad de empleados',
+      error: error.message
+    });
+  }
+};
+
+// GET /api/reports/employee/:employeeId/summary
+// Retorna resumen individual del empleado
+export const getEmployeeSummary = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+
+    // Validar que el ID sea válido
+    if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'ID de empleado inválido'
+      });
+    }
+
+    // Obtener el empleado
+    const employee = await Employee.findById(employeeId)
+      .populate('userId', 'name email')
+      .populate('departmentId', 'name');
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: 'Empleado no encontrado'
+      });
+    }
+
+    // Obtener asistencia del mes actual
+    const currentDate = new Date();
+    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999);
+
+    const monthlyAttendance = await Attendance.find({
+      employeeId: employee._id,
+      date: { $gte: startOfMonth, $lte: endOfMonth }
+    });
+
+    // Contar por estado
+    const present = monthlyAttendance.filter(a => a.status === 'present').length;
+    const absent = monthlyAttendance.filter(a => a.status === 'absent').length;
+    const late = monthlyAttendance.filter(a => a.status === 'late').length;
+    const leave = monthlyAttendance.filter(a => a.status === 'leave').length;
+
+    return res.json({
+      success: true,
+      message: 'Resumen del empleado',
+      employee: {
+        employeeId: employee._id,
+        name: employee.userId?.name,
+        email: employee.userId?.email,
+        position: employee.position,
+        department: employee.departmentId?.name,
+        salary: employee.salary,
+        hireDate: employee.hireDate,
+        isActive: employee.isActive,
+        currentMonthAttendance: {
+          present,
+          absent,
+          late,
+          leave,
+          total: monthlyAttendance.length
+        }
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error generando resumen del empleado',
+      error: error.message
+    });
+  }
+};
