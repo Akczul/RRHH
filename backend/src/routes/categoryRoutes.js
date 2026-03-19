@@ -6,7 +6,8 @@ import {
   updateCategory,
   deleteCategory
 } from '../controllers/categoryController.js';
-import { protect, authorize } from '../middlewares/authMiddleware.js';
+import { protect } from '../middlewares/authMiddleware.js';
+import { authorize } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
@@ -17,12 +18,12 @@ router.get('/', protect, getCategories);
 router.get('/:id', protect, getCategoryById);
 
 // POST: Crear categoría (requiere ser admin)
-router.post('/', protect, authorize(['admin']), createCategory);
+router.post('/', protect, authorize('admin'), createCategory);
 
 // PUT: Actualizar categoría (requiere ser admin)
-router.put('/:id', protect, authorize(['admin']), updateCategory);
+router.put('/:id', protect, authorize('admin'), updateCategory);
 
 // DELETE: Eliminar categoría (requiere ser admin)
-router.delete('/:id', protect, authorize(['admin']), deleteCategory);
+router.delete('/:id', protect, authorize('admin'), deleteCategory);
 
 export default router;
