@@ -97,6 +97,7 @@ El frontend se ejecutará en: `http://localhost:5173`
 
 - [Backend README](backend/README.md) - Instalación y uso del servidor
 - [Frontend README](frontend/README.md) - Interfaz visual
+- Swagger API Docs (backend en ejecución): `http://localhost:5000/api-docs`
 
 ---
 
