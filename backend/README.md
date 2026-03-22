@@ -14,6 +14,38 @@ Este backend es la **base del proyecto RRHH**. Aquí hemos implementado:
 -  **Base de datos MongoDB**: Almacenamos usuarios de forma persistente
 -  **CORS configurado**: El frontend puede comunicarse con el backend
 
+## Actualizacion reciente: Documentacion Swagger
+
+Se agrego documentacion interactiva de la API con Swagger para facilitar pruebas y entendimiento de endpoints.
+
+### Que se cambio (resumen rapido)
+
+- Se instalaron las dependencias `swagger-ui-express` y `swagger-jsdoc`.
+- Se creo la configuracion en `src/config/swagger.js` con:
+  - `tags` por modulo (`Auth`, `Categories`, `Products`, `Attendance`, `Reports`).
+  - `schemas` reutilizables para modelos y requests/responses.
+  - seguridad por cookie JWT (`cookieAuth`, cookie `token`).
+- Se expuso la UI en `GET /api-docs` desde `server.js`.
+- Se documentaron todos los endpoints existentes en `src/routes/*.js` con bloques `@swagger`:
+  - request body
+  - parametros path/query
+  - respuestas `200`, `201`, `400`, `401`, `403`, `404`, `500`
+
+### Como usar Swagger
+
+1. Inicia el backend:
+
+```bash
+cd backend
+npm run dev
+```
+
+2. Abre en el navegador:
+
+```text
+http://localhost:5000/api-docs
+```
+
 ### Estructura del Proyecto
 
 ```
