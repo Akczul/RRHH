@@ -1,28 +1,28 @@
 import express from 'express';
 import {
-  createCategory,
-  getCategories,
-  getCategoryById,
-  updateCategory,
-  deleteCategory
-} from '../controllers/categoryController.js';
+  getPositions,
+  getPositionById,
+  createPosition,
+  updatePosition,
+  deletePosition
+} from '../controllers/positionController.js';
 import { protect } from '../middlewares/authMiddleware.js';
 import { authorize } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
-// GET: Listar categorías (requiere autenticación)
 /**
  * @swagger
- * /api/categories:
+ * /api/cargos:
  *   get:
- *     summary: Listar categorias
- *     tags: [Categorias]
+ *     summary: Obtener lista de cargos
+ *     description: Obtiene todos los cargos del sistema con sus departamentos asociados
+ *     tags: [Cargos]
  *     security:
  *       - cookieAuth: []
  *     responses:
  *       200:
- *         description: Lista de categorias
+ *         description: Lista de cargos obtenida correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -31,32 +31,27 @@ const router = express.Router();
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 categories:
+ *                 count:
+ *                   type: integer
+ *                   example: 8
+ *                 positions:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Category'
- *       201:
- *         $ref: '#/components/responses/Created'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
+ *                     $ref: '#/components/schemas/Position'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/', protect, getCategories);
+router.get('/', protect, getPositions);
 
-// GET por ID: Obtener categoría específica (requiere autenticación)
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/cargos/{id}:
  *   get:
- *     summary: Obtener categoria por ID
- *     tags: [Categorias]
+ *     summary: Obtener cargo por ID
+ *     description: Obtiene los datos de un cargo específico
+ *     tags: [Cargos]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -65,10 +60,10 @@ router.get('/', protect, getCategories);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de la categoria
+ *         description: ID del cargo
  *     responses:
  *       200:
- *         description: Categoria encontrada
+ *         description: Cargo encontrado
  *         content:
  *           application/json:
  *             schema:
@@ -77,30 +72,24 @@ router.get('/', protect, getCategories);
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 category:
- *                   $ref: '#/components/schemas/Category'
- *       201:
- *         $ref: '#/components/responses/Created'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
+ *                 position:
+ *                   $ref: '#/components/schemas/Position'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
  *       404:
  *         $ref: '#/components/responses/NotFound'
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/:id', protect, getCategoryById);
+router.get('/:id', protect, getPositionById);
 
-// POST: Crear categoría (requiere ser admin)
 /**
  * @swagger
- * /api/categories:
+ * /api/cargos:
  *   post:
- *     summary: Crear categoria
- *     tags: [Categorias]
+ *     summary: Crear nuevo cargo
+ *     description: Crea un nuevo cargo en el sistema (requiere rol admin)
+ *     tags: [Cargos]
  *     security:
  *       - cookieAuth: []
  *     requestBody:
@@ -108,10 +97,10 @@ router.get('/:id', protect, getCategoryById);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CategoryRequest'
+ *             $ref: '#/components/schemas/CreatePositionRequest'
  *     responses:
  *       201:
- *         description: Categoria creada correctamente
+ *         description: Cargo creado correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -122,30 +111,27 @@ router.get('/:id', protect, getCategoryById);
  *                   example: true
  *                 message:
  *                   type: string
- *                 category:
- *                   $ref: '#/components/schemas/Category'
- *       200:
- *         $ref: '#/components/responses/Ok'
+ *                   example: "Cargo creado correctamente"
+ *                 position:
+ *                   $ref: '#/components/schemas/Position'
  *       400:
  *         $ref: '#/components/responses/BadRequest'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  *       403:
  *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.post('/', protect, authorize('admin'), createCategory);
+router.post('/', protect, authorize('admin'), createPosition);
 
-// PUT: Actualizar categoría (requiere ser admin)
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/cargos/{id}:
  *   put:
- *     summary: Actualizar categoria por ID
- *     tags: [Categorias]
+ *     summary: Actualizar cargo
+ *     description: Actualiza los datos de un cargo (requiere rol admin)
+ *     tags: [Cargos]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -154,16 +140,16 @@ router.post('/', protect, authorize('admin'), createCategory);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de la categoria
+ *         description: ID del cargo
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CategoryRequest'
+ *             $ref: '#/components/schemas/CreatePositionRequest'
  *     responses:
  *       200:
- *         description: Categoria actualizada correctamente
+ *         description: Cargo actualizado correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -174,10 +160,9 @@ router.post('/', protect, authorize('admin'), createCategory);
  *                   example: true
  *                 message:
  *                   type: string
- *                 category:
- *                   $ref: '#/components/schemas/Category'
- *       201:
- *         $ref: '#/components/responses/Created'
+ *                   example: "Cargo actualizado correctamente"
+ *                 position:
+ *                   $ref: '#/components/schemas/Position'
  *       400:
  *         $ref: '#/components/responses/BadRequest'
  *       401:
@@ -189,15 +174,15 @@ router.post('/', protect, authorize('admin'), createCategory);
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.put('/:id', protect, authorize('admin'), updateCategory);
+router.put('/:id', protect, authorize('admin'), updatePosition);
 
-// DELETE: Eliminar categoría (requiere ser admin)
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/cargos/{id}:
  *   delete:
- *     summary: Eliminar categoria por ID
- *     tags: [Categorias]
+ *     summary: Eliminar cargo
+ *     description: Elimina un cargo del sistema (requiere rol admin)
+ *     tags: [Cargos]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -206,14 +191,14 @@ router.put('/:id', protect, authorize('admin'), updateCategory);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de la categoria
+ *         description: ID del cargo
  *     responses:
  *       200:
- *         $ref: '#/components/responses/Ok'
- *       201:
- *         $ref: '#/components/responses/Created'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
+ *         description: Cargo eliminado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  *       403:
@@ -223,6 +208,6 @@ router.put('/:id', protect, authorize('admin'), updateCategory);
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.delete('/:id', protect, authorize('admin'), deleteCategory);
+router.delete('/:id', protect, authorize('admin'), deletePosition);
 
 export default router;

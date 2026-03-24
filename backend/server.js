@@ -10,6 +10,9 @@ import categoryRoutes from './src/routes/categoryRoutes.js';
 import productRoutes from './src/routes/productRoutes.js';
 import reportRoutes from './src/routes/reportRoutes.js';
 import attendanceRoutes from './src/routes/attendanceRoutes.js';
+import employeeRoutes from './src/routes/employeeRoutes.js';
+import departmentRoutes from './src/routes/departmentRoutes.js';
+import positionRoutes from './src/routes/positionRoutes.js';
 
 // Cargar variables de entorno desde .env
 dotenv.config();
@@ -40,6 +43,9 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/empleados', employeeRoutes);
+app.use('/api/departamentos', departmentRoutes);
+app.use('/api/cargos', positionRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
@@ -60,7 +66,8 @@ app.use((req, res) => {
 // Iniciar el servidor
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`\n🚀 Servidor iniciado en puerto ${PORT}`);
-  console.log(`📍 URL: http://localhost:${PORT}`);
+  console.log(`\n Servidor iniciado en puerto ${PORT}`);
+  console.log(` URL: http://localhost:${PORT}`);
+  console.log(` Swagger API Docs: http://localhost:${PORT}/api-docs`);
   console.log(`\nPara desarrollar usar: npm run dev\n`);
 });

@@ -16,7 +16,7 @@ const router = express.Router();
  * /api/attendance/checkin:
  *   post:
  *     summary: Registrar entrada del empleado autenticado
- *     tags: [Attendance]
+ *     tags: [Asistencia]
  *     security:
  *       - cookieAuth: []
  *     requestBody:
@@ -60,7 +60,7 @@ router.post('/checkin', protect, authorize('employee', 'admin'), checkIn);
  * /api/attendance/checkout:
  *   put:
  *     summary: Registrar salida del empleado autenticado
- *     tags: [Attendance]
+ *     tags: [Asistencia]
  *     security:
  *       - cookieAuth: []
  *     requestBody:
@@ -105,7 +105,7 @@ router.put('/checkout', protect, authorize('employee', 'admin'), checkOut);
  * /api/attendance/date/{date}:
  *   get:
  *     summary: Listar asistencias por fecha
- *     tags: [Attendance]
+ *     tags: [Asistencia]
  *     security:
  *       - cookieAuth: []
  *     parameters:

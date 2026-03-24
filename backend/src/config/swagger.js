@@ -17,10 +17,13 @@ const swaggerOptions = {
     ],
     tags: [
       { name: 'Auth', description: 'Autenticacion y sesion de usuarios' },
-      { name: 'Categories', description: 'Gestion de categorias' },
-      { name: 'Products', description: 'Gestion de productos' },
-      { name: 'Attendance', description: 'Control de asistencia' },
-      { name: 'Reports', description: 'Reportes administrativos' }
+      { name: 'Empleados', description: 'Gestion de empleados' },
+      { name: 'Departamentos', description: 'Gestion de departamentos' },
+      { name: 'Cargos', description: 'Gestion de cargos y posiciones' },
+      { name: 'Asistencia', description: 'Control de asistencia y registros diarios' },
+      { name: 'Reportes', description: 'Reportes administrativos' },
+      { name: 'Categorias', description: 'Gestion de categorias de productos' },
+      { name: 'Productos', description: 'Gestion de productos' }
     ],
     components: {
       securitySchemes: {
@@ -47,8 +50,8 @@ const swaggerOptions = {
           properties: {
             _id: { type: 'string', example: '65f0a1b2c3d4e5f678901235' },
             name: { type: 'string', example: 'Recursos Humanos' },
-            description: { type: 'string', example: 'Gestion del talento humano' },
-            createdAt: { type: 'string', format: 'date-time' }
+            description: { type: 'string', example: 'Departamento de gestion del talento humano' },
+            createdAt: { type: 'string', format: 'date-time', example: '2024-03-22T10:00:00Z' }
           }
         },
         Position: {
@@ -56,20 +59,66 @@ const swaggerOptions = {
           properties: {
             _id: { type: 'string', example: '65f0a1b2c3d4e5f678901236' },
             title: { type: 'string', example: 'Analista de Nomina' },
-            department: { type: 'string', example: '65f0a1b2c3d4e5f678901235' },
-            createdAt: { type: 'string', format: 'date-time' }
+            department: {
+              oneOf: [
+                { type: 'string', example: '65f0a1b2c3d4e5f678901235' },
+                {
+                  type: 'object',
+                  properties: {
+                    _id: { type: 'string' },
+                    name: { type: 'string' }
+                  }
+                }
+              ]
+            },
+            createdAt: { type: 'string', format: 'date-time', example: '2024-03-22T10:00:00Z' }
           }
         },
         Employee: {
           type: 'object',
           properties: {
             _id: { type: 'string', example: '65f0a1b2c3d4e5f678901237' },
-            userId: { type: 'string', example: '65f0a1b2c3d4e5f678901234' },
-            position: { type: 'string', example: '65f0a1b2c3d4e5f678901236' },
-            department: { type: 'string', example: '65f0a1b2c3d4e5f678901235' },
-            hireDate: { type: 'string', format: 'date-time' },
+            userId: {
+              oneOf: [
+                { type: 'string', example: '65f0a1b2c3d4e5f678901234' },
+                {
+                  type: 'object',
+                  properties: {
+                    _id: { type: 'string' },
+                    name: { type: 'string' },
+                    email: { type: 'string' },
+                    role: { type: 'string' }
+                  }
+                }
+              ]
+            },
+            position: {
+              oneOf: [
+                { type: 'string', example: '65f0a1b2c3d4e5f678901236' },
+                {
+                  type: 'object',
+                  properties: {
+                    _id: { type: 'string' },
+                    title: { type: 'string' }
+                  }
+                }
+              ]
+            },
+            department: {
+              oneOf: [
+                { type: 'string', example: '65f0a1b2c3d4e5f678901235' },
+                {
+                  type: 'object',
+                  properties: {
+                    _id: { type: 'string' },
+                    name: { type: 'string' }
+                  }
+                }
+              ]
+            },
+            hireDate: { type: 'string', format: 'date-time', example: '2024-03-22T00:00:00Z' },
             status: { type: 'string', enum: ['active', 'inactive'], example: 'active' },
-            createdAt: { type: 'string', format: 'date-time' }
+            createdAt: { type: 'string', format: 'date-time', example: '2024-03-22T10:00:00Z' }
           }
         },
         Attendance: {
@@ -184,6 +233,42 @@ const swaggerOptions = {
               format: 'date-time',
               example: '2026-03-22T17:30:00.000Z'
             }
+          }
+        },
+        CreateEmployeeRequest: {
+          type: 'object',
+          required: ['userId', 'position', 'department'],
+          properties: {
+            userId: { type: 'string', example: '65f0a1b2c3d4e5f678901234', description: 'ID del usuario asociado' },
+            position: { type: 'string', example: '65f0a1b2c3d4e5f678901236', description: 'ID del cargo' },
+            department: { type: 'string', example: '65f0a1b2c3d4e5f678901235', description: 'ID del departamento' },
+            hireDate: { type: 'string', format: 'date-time', example: '2024-03-22T00:00:00Z', description: 'Fecha de contratacion' },
+            status: { type: 'string', enum: ['active', 'inactive'], example: 'active', description: 'Estado del empleado' }
+          }
+        },
+        UpdateEmployeeRequest: {
+          type: 'object',
+          properties: {
+            position: { type: 'string', example: '65f0a1b2c3d4e5f678901236', description: 'ID del cargo' },
+            department: { type: 'string', example: '65f0a1b2c3d4e5f678901235', description: 'ID del departamento' },
+            hireDate: { type: 'string', format: 'date-time', example: '2024-03-22T00:00:00Z', description: 'Fecha de contratacion' },
+            status: { type: 'string', enum: ['active', 'inactive'], example: 'active', description: 'Estado del empleado' }
+          }
+        },
+        CreateDepartmentRequest: {
+          type: 'object',
+          required: ['name'],
+          properties: {
+            name: { type: 'string', example: 'Recursos Humanos', description: 'Nombre del departamento' },
+            description: { type: 'string', example: 'Departamento de gestion del talento humano', description: 'Descripcion del departamento' }
+          }
+        },
+        CreatePositionRequest: {
+          type: 'object',
+          required: ['title', 'department'],
+          properties: {
+            title: { type: 'string', example: 'Analista de Nomina', description: 'Titulo o nombre del cargo' },
+            department: { type: 'string', example: '65f0a1b2c3d4e5f678901235', description: 'ID del departamento' }
           }
         },
         SuccessResponse: {

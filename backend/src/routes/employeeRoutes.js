@@ -1,28 +1,28 @@
 import express from 'express';
 import {
-  createCategory,
-  getCategories,
-  getCategoryById,
-  updateCategory,
-  deleteCategory
-} from '../controllers/categoryController.js';
+  getEmployees,
+  getEmployeeById,
+  createEmployee,
+  updateEmployee,
+  deleteEmployee
+} from '../controllers/employeeController.js';
 import { protect } from '../middlewares/authMiddleware.js';
 import { authorize } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
-// GET: Listar categorías (requiere autenticación)
 /**
  * @swagger
- * /api/categories:
+ * /api/empleados:
  *   get:
- *     summary: Listar categorias
- *     tags: [Categorias]
+ *     summary: Obtener lista de empleados
+ *     description: Obtiene todos los empleados del sistema con sus datos relacionados (usuario, departamento, cargo)
+ *     tags: [Empleados]
  *     security:
  *       - cookieAuth: []
  *     responses:
  *       200:
- *         description: Lista de categorias
+ *         description: Lista de empleados obtenida correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -31,32 +31,27 @@ const router = express.Router();
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 categories:
+ *                 count:
+ *                   type: integer
+ *                   example: 5
+ *                 employees:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Category'
- *       201:
- *         $ref: '#/components/responses/Created'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
+ *                     $ref: '#/components/schemas/Employee'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/', protect, getCategories);
+router.get('/', protect, getEmployees);
 
-// GET por ID: Obtener categoría específica (requiere autenticación)
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/empleados/{id}:
  *   get:
- *     summary: Obtener categoria por ID
- *     tags: [Categorias]
+ *     summary: Obtener empleado por ID
+ *     description: Obtiene los datos de un empleado específico
+ *     tags: [Empleados]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -65,10 +60,10 @@ router.get('/', protect, getCategories);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de la categoria
+ *         description: ID del empleado
  *     responses:
  *       200:
- *         description: Categoria encontrada
+ *         description: Empleado encontrado
  *         content:
  *           application/json:
  *             schema:
@@ -77,30 +72,24 @@ router.get('/', protect, getCategories);
  *                 success:
  *                   type: boolean
  *                   example: true
- *                 category:
- *                   $ref: '#/components/schemas/Category'
- *       201:
- *         $ref: '#/components/responses/Created'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
+ *                 employee:
+ *                   $ref: '#/components/schemas/Employee'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
- *       403:
- *         $ref: '#/components/responses/Forbidden'
  *       404:
  *         $ref: '#/components/responses/NotFound'
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.get('/:id', protect, getCategoryById);
+router.get('/:id', protect, getEmployeeById);
 
-// POST: Crear categoría (requiere ser admin)
 /**
  * @swagger
- * /api/categories:
+ * /api/empleados:
  *   post:
- *     summary: Crear categoria
- *     tags: [Categorias]
+ *     summary: Crear nuevo empleado
+ *     description: Crea un nuevo registro de empleado (requiere rol admin)
+ *     tags: [Empleados]
  *     security:
  *       - cookieAuth: []
  *     requestBody:
@@ -108,10 +97,10 @@ router.get('/:id', protect, getCategoryById);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CategoryRequest'
+ *             $ref: '#/components/schemas/CreateEmployeeRequest'
  *     responses:
  *       201:
- *         description: Categoria creada correctamente
+ *         description: Empleado creado correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -122,30 +111,27 @@ router.get('/:id', protect, getCategoryById);
  *                   example: true
  *                 message:
  *                   type: string
- *                 category:
- *                   $ref: '#/components/schemas/Category'
- *       200:
- *         $ref: '#/components/responses/Ok'
+ *                   example: "Empleado creado correctamente"
+ *                 employee:
+ *                   $ref: '#/components/schemas/Employee'
  *       400:
  *         $ref: '#/components/responses/BadRequest'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  *       403:
  *         $ref: '#/components/responses/Forbidden'
- *       404:
- *         $ref: '#/components/responses/NotFound'
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.post('/', protect, authorize('admin'), createCategory);
+router.post('/', protect, authorize('admin'), createEmployee);
 
-// PUT: Actualizar categoría (requiere ser admin)
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/empleados/{id}:
  *   put:
- *     summary: Actualizar categoria por ID
- *     tags: [Categorias]
+ *     summary: Actualizar empleado
+ *     description: Actualiza los datos de un empleado (requiere rol admin)
+ *     tags: [Empleados]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -154,16 +140,16 @@ router.post('/', protect, authorize('admin'), createCategory);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de la categoria
+ *         description: ID del empleado
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CategoryRequest'
+ *             $ref: '#/components/schemas/UpdateEmployeeRequest'
  *     responses:
  *       200:
- *         description: Categoria actualizada correctamente
+ *         description: Empleado actualizado correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -174,10 +160,9 @@ router.post('/', protect, authorize('admin'), createCategory);
  *                   example: true
  *                 message:
  *                   type: string
- *                 category:
- *                   $ref: '#/components/schemas/Category'
- *       201:
- *         $ref: '#/components/responses/Created'
+ *                   example: "Empleado actualizado correctamente"
+ *                 employee:
+ *                   $ref: '#/components/schemas/Employee'
  *       400:
  *         $ref: '#/components/responses/BadRequest'
  *       401:
@@ -189,15 +174,15 @@ router.post('/', protect, authorize('admin'), createCategory);
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.put('/:id', protect, authorize('admin'), updateCategory);
+router.put('/:id', protect, authorize('admin'), updateEmployee);
 
-// DELETE: Eliminar categoría (requiere ser admin)
 /**
  * @swagger
- * /api/categories/{id}:
+ * /api/empleados/{id}:
  *   delete:
- *     summary: Eliminar categoria por ID
- *     tags: [Categorias]
+ *     summary: Eliminar empleado
+ *     description: Elimina un registro de empleado del sistema (requiere rol admin)
+ *     tags: [Empleados]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -206,14 +191,14 @@ router.put('/:id', protect, authorize('admin'), updateCategory);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de la categoria
+ *         description: ID del empleado
  *     responses:
  *       200:
- *         $ref: '#/components/responses/Ok'
- *       201:
- *         $ref: '#/components/responses/Created'
- *       400:
- *         $ref: '#/components/responses/BadRequest'
+ *         description: Empleado eliminado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  *       403:
@@ -223,6 +208,6 @@ router.put('/:id', protect, authorize('admin'), updateCategory);
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-router.delete('/:id', protect, authorize('admin'), deleteCategory);
+router.delete('/:id', protect, authorize('admin'), deleteEmployee);
 
 export default router;
