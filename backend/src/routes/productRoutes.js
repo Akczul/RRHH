@@ -17,7 +17,7 @@ const router = express.Router();
  * /api/products:
  *   get:
  *     summary: Listar productos
- *     tags: [Products]
+ *     tags: [Productos]
  *     security:
  *       - cookieAuth: []
  *     responses:
@@ -56,7 +56,7 @@ router.get('/', protect, getProducts);
  * /api/products/{id}:
  *   get:
  *     summary: Obtener producto por ID
- *     tags: [Products]
+ *     tags: [Productos]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -100,7 +100,7 @@ router.get('/:id', protect, getProductById);
  * /api/products:
  *   post:
  *     summary: Crear producto
- *     tags: [Products]
+ *     tags: [Productos]
  *     security:
  *       - cookieAuth: []
  *     requestBody:
@@ -145,7 +145,7 @@ router.post('/', protect, authorize('admin'), createProduct);
  * /api/products/{id}:
  *   put:
  *     summary: Actualizar producto por ID
- *     tags: [Products]
+ *     tags: [Productos]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -197,7 +197,7 @@ router.put('/:id', protect, authorize('admin'), updateProduct);
  * /api/products/{id}:
  *   delete:
  *     summary: Eliminar producto por ID
- *     tags: [Products]
+ *     tags: [Productos]
  *     security:
  *       - cookieAuth: []
  *     parameters:

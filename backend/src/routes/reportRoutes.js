@@ -19,7 +19,7 @@ router.use(authorize('admin'));
  * /api/reports/attendance/monthly:
  *   get:
  *     summary: Obtener reporte mensual de asistencia
- *     tags: [Reports]
+ *     tags: [Reportes]
  *     security:
  *       - cookieAuth: []
  *     parameters:
@@ -101,7 +101,7 @@ router.get('/attendance/monthly', getMonthlyAttendanceReport);
  * /api/reports/headcount:
  *   get:
  *     summary: Obtener headcount por departamento
- *     tags: [Reports]
+ *     tags: [Reportes]
  *     security:
  *       - cookieAuth: []
  *     responses:
@@ -151,7 +151,7 @@ router.get('/headcount', getHeadcountReport);
  * /api/reports/employee/{employeeId}/summary:
  *   get:
  *     summary: Obtener resumen individual de empleado
- *     tags: [Reports]
+ *     tags: [Reportes]
  *     security:
  *       - cookieAuth: []
  *     parameters:
