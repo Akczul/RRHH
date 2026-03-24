@@ -1,52 +1,89 @@
 ﻿/**
  * Login.jsx — Pagina de inicio de sesion de CorpHR.
  *
- * Funcionalidad:
- *  - Formulario con email y contrasena
- *  - Autenticacion via POST /api/auth/login (backend real)
- *  - Mostrar/ocultar contrasena
- *  - Mensajes de error del servidor
- *  - Redireccion segun rol tras el login exitoso
+ * Diseño:
+ *  - Panel izquierdo: features del rol activo (cambia al cambiar tab)
+ *  - Panel derecho: formulario compacto con tabs Admin / Empleado
+ *  - "Volver al inicio" fijo en la esquina superior izquierda
+ *  - Rol inicial tomado desde ?rol= (Home) o 'admin' por defecto
  */
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Button from '../components/ui/Button';
 import Alert  from '../components/ui/Alert';
 import './Login.css';
 
-/* Icono de ojo para mostrar/ocultar contrasena */
+/* ── Iconos ── */
 const IcoEye     = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>;
 const IcoEyeOff  = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>;
+const IcoShield  = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
+const IcoUser    = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+const IcoBack    = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>;
+const IcoCheck   = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
+const IcoShieldLg = () => <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
+const IcoUserLg   = () => <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+
+/* ── Configuracion por rol ── */
+const ROL_CONFIG = {
+  admin: {
+    color:   'accent',
+    titulo:  'Panel de Administración',
+    sub:     'Control total sobre el sistema',
+    icono:   <IcoShieldLg />,
+    features: [
+      'Dashboard con métricas en tiempo real',
+      'Gestión de empleados y cargos',
+      'Administrar estructura de departamentos',
+      'Control y seguimiento de asistencia',
+      'Generación de reportes organizacionales',
+      'Crear cuentas de acceso al sistema',
+    ],
+  },
+  empleado: {
+    color:   'purple',
+    titulo:  'Portal del Empleado',
+    sub:     'Tu espacio personal de RRHH',
+    icono:   <IcoUserLg />,
+    features: [
+      'Consultar perfil y datos personales',
+      'Ver historial de asistencia',
+      'Actualizar información de contacto',
+      'Acceso seguro con credenciales propias',
+    ],
+  },
+};
 
 export default function Login() {
-  const { login, esAdmin } = useAuth();
-  const navigate = useNavigate();
+  const { login }      = useAuth();
+  const navigate       = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  /* Rol inicial desde ?rol= o 'admin' por defecto */
+  const rolParam  = searchParams.get('rol');
+  const rolInicial = (rolParam === 'admin' || rolParam === 'empleado') ? rolParam : 'admin';
+  const [rolActivo, setRolActivo] = useState(rolInicial);
+
+  const config = ROL_CONFIG[rolActivo];
 
   /* ── Estado del formulario ── */
-  const [email,      setEmail]      = useState('');
-  const [password,   setPassword]   = useState('');
-  const [verPass,    setVerPass]    = useState(false);   /* Toggle mostrar/ocultar */
-  const [cargando,   setCargando]   = useState(false);
-  const [error,      setError]      = useState('');
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [verPass,  setVerPass]  = useState(false);
+  const [cargando, setCargando] = useState(false);
+  const [error,    setError]    = useState('');
 
-  /* ── Manejar el envio del formulario ── */
   const manejarEnvio = async (e) => {
     e.preventDefault();
     setError('');
     setCargando(true);
-
     try {
-      /* Llamar al login del contexto (que llama al backend) */
       const usuario = await login(email.trim(), password);
-
-      /* Redirigir segun el rol obtenido del servidor */
       navigate(
-        usuario.role === 'admin' ? '/dashboard' : '/mi-perfil',
+        usuario.role === 'admin' ? '/app/dashboard' : '/app/mi-perfil',
         { replace: true }
       );
     } catch (err) {
-      /* Mostrar el mensaje de error devuelto por el backend */
       setError(err.message || 'Error al iniciar sesion');
     } finally {
       setCargando(false);
@@ -54,44 +91,89 @@ export default function Login() {
   };
 
   return (
-    /* Contenedor de pantalla completa centrado */
     <div className="login-screen">
 
-      {/* Panel de branding (lado izquierdo en pantallas grandes) */}
-      <div className="login-brand">
-        <div className="login-brand__logo">CH</div>
-        <h1 className="login-brand__name">CorpHR</h1>
-        <p className="login-brand__tagline">
-          Gestion inteligente de recursos humanos.
-        </p>
+      {/* Volver al inicio — esquina superior izquierda */}
+      <Link to="/" className="login-back">
+        <IcoBack /> Volver al inicio
+      </Link>
 
-        {/* Decoracion de puntos de fondo */}
+      {/* ── Panel izquierdo: features del rol activo ── */}
+      <div className={`login-brand login-brand--${config.color}`}>
+        <div className="login-brand__role-header">
+          <div className={`login-brand__role-icon login-brand__role-icon--${config.color}`}>
+            {config.icono}
+          </div>
+          <div>
+            <h3 className="login-brand__role-title">{config.titulo}</h3>
+            <p className="login-brand__role-sub">{config.sub}</p>
+          </div>
+        </div>
+
+        <ul className="login-brand__features">
+          {config.features.map(f => (
+            <li key={f} className={`login-brand__feat login-brand__feat--${config.color}`}>
+              <span className="login-brand__feat-icon"><IcoCheck /></span>
+              {f}
+            </li>
+          ))}
+        </ul>
+
         <div className="login-brand__deco" aria-hidden="true" />
       </div>
 
-      {/* Panel del formulario (lado derecho) */}
+      {/* ── Panel derecho: formulario ── */}
       <div className="login-panel">
         <div className="login-card">
 
-          {/* ── Encabezado del formulario ── */}
-          <div className="login-card__header">
-            <h2 className="login-card__title">Bienvenido</h2>
-            <p className="login-card__sub">Ingresa tus credenciales de acceso</p>
+          {/* Branding */}
+          <div className="login-card__brand">
+            <div className="login-card__logo">CH</div>
+            <div className="login-card__brand-text">
+              <span className="login-card__brand-name">CorpHR</span>
+              <span className="login-card__brand-sub">Sistema de Recursos Humanos</span>
+            </div>
           </div>
 
-          {/* ── Mensaje de error del servidor ── */}
+          {/* Titulo */}
+          <div className="login-card__header">
+            <h2 className="login-card__title">Bienvenido</h2>
+            <p className="login-card__sub">Ingresa tus credenciales para continuar</p>
+          </div>
+
+          {/* Tabs de rol */}
+          <div className="login-tabs" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={rolActivo === 'admin'}
+              className={`login-tab ${rolActivo === 'admin' ? 'login-tab--active-accent' : ''}`}
+              onClick={() => { setRolActivo('admin'); setError(''); }}
+            >
+              <IcoShield /> Administrador
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={rolActivo === 'empleado'}
+              className={`login-tab ${rolActivo === 'empleado' ? 'login-tab--active-purple' : ''}`}
+              onClick={() => { setRolActivo('empleado'); setError(''); }}
+            >
+              <IcoUser /> Empleado
+            </button>
+          </div>
+
+          {/* Error */}
           {error && (
-            <Alert tipo="error" onCerrar={() => setError('')} className="login-card__alert">
+            <Alert tipo="error" onCerrar={() => setError('')}>
               {error}
             </Alert>
           )}
 
-          {/* ── Formulario de autenticacion ── */}
+          {/* Formulario */}
           <form className="login-form" onSubmit={manejarEnvio} noValidate>
-
-            {/* Campo de correo electronico */}
             <div className="field">
-              <label htmlFor="email" className="field__label">Correo electronico</label>
+              <label htmlFor="email" className="field__label">Correo electrónico</label>
               <input
                 id="email"
                 type="email"
@@ -105,17 +187,8 @@ export default function Login() {
               />
             </div>
 
-            {/* Campo de contrasena con toggle de visibilidad */}
             <div className="field">
-              <div className="field__label-row">
-                <label htmlFor="password" className="field__label">Contraseña</label>
-                {/* Enlace a la pagina de recuperacion */}
-                <Link to="/recuperar-contrasena" className="field__link">
-                  Olvidé mi contraseña
-                </Link>
-              </div>
-
-              {/* Envoltorio posicion relativa para el icono de ojo */}
+              <label htmlFor="password" className="field__label">Contraseña</label>
               <div className="field__input-wrap">
                 <input
                   id="password"
@@ -127,7 +200,6 @@ export default function Login() {
                   autoComplete="current-password"
                   required
                 />
-                {/* Boton para mostrar u ocultar la contrasena */}
                 <button
                   type="button"
                   className="field__eye"
@@ -139,7 +211,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Boton de envio del formulario */}
             <Button
               type="submit"
               variante="primary"
@@ -147,9 +218,15 @@ export default function Login() {
               fullWidth
               cargando={cargando}
             >
-              {cargando ? 'Verificando...' : 'Iniciar Sesion'}
+              {cargando ? 'Verificando...' : 'Iniciar Sesión'}
             </Button>
           </form>
+
+          {/* Recuperar contraseña */}
+          <p className="login-card__footer">
+            ¿Olvidaste tu contraseña?{' '}
+            <Link to="/recuperar-contrasena" className="field__link">Recuperar acceso</Link>
+          </p>
         </div>
       </div>
     </div>

@@ -11,13 +11,13 @@ import './Topbar.css';
 
 /* ── Mapa ruta → { titulo, subtitulo } ── */
 const TITULOS = {
-  '/dashboard':     { titulo: 'Dashboard',      subtitulo: 'Resumen general del sistema' },
-  '/posiciones':    { titulo: 'Posiciones',      subtitulo: 'Gestion de cargos y roles organizacionales' },
-  '/departamentos': { titulo: 'Departamentos',   subtitulo: 'Estructura organizativa de la empresa' },
-  '/asistencia':    { titulo: 'Asistencia',      subtitulo: 'Control y seguimiento de asistencia' },
-  '/reportes':      { titulo: 'Reportes',        subtitulo: 'Informes y estadisticas del sistema' },
-  '/mi-perfil':     { titulo: 'Mi Perfil',       subtitulo: 'Informacion personal y de cuenta' },
-  '/mi-asistencia': { titulo: 'Mi Asistencia',   subtitulo: 'Historial personal de asistencia' },
+  '/app/dashboard':     { titulo: 'Dashboard',      subtitulo: 'Resumen general del sistema' },
+  '/app/posiciones':    { titulo: 'Posiciones',      subtitulo: 'Gestion de cargos y roles organizacionales' },
+  '/app/departamentos': { titulo: 'Departamentos',   subtitulo: 'Estructura organizativa de la empresa' },
+  '/app/asistencia':    { titulo: 'Asistencia',      subtitulo: 'Control y seguimiento de asistencia' },
+  '/app/reportes':      { titulo: 'Reportes',        subtitulo: 'Informes y estadisticas del sistema' },
+  '/app/mi-perfil':     { titulo: 'Mi Perfil',       subtitulo: 'Informacion personal y de cuenta' },
+  '/app/mi-asistencia': { titulo: 'Mi Asistencia',   subtitulo: 'Historial personal de asistencia' },
 };
 
 /* Formatear la fecha actual en espanol */

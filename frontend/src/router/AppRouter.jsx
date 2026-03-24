@@ -19,6 +19,7 @@ import { useAuth } from '../hooks/useAuth';
 import Layout from '../components/layout/Layout';
 
 /* Paginas publicas */
+import Home            from '../pages/Home';
 import Login           from '../pages/Login';
 import RecoverPassword from '../pages/RecoverPassword';
 
@@ -48,7 +49,7 @@ function AdminRoute({ children }) {
   const { esAdmin, estaAutenticado, cargando } = useAuth();
   if (cargando) return null;
   if (!estaAutenticado) return <Navigate to="/login" replace />;
-  return esAdmin() ? children : <Navigate to="/mi-perfil" replace />;
+  return esAdmin() ? children : <Navigate to="/app/mi-perfil" replace />;
 }
 
 /** Ruta de empleado: rol 'employee' (admin tambien puede verlas) */
@@ -63,7 +64,7 @@ function PublicRoute({ children }) {
   const { estaAutenticado, esAdmin, cargando } = useAuth();
   if (cargando) return null;
   if (estaAutenticado) {
-    return <Navigate to={esAdmin() ? '/dashboard' : '/mi-perfil'} replace />;
+    return <Navigate to={esAdmin() ? '/app/dashboard' : '/app/mi-perfil'} replace />;
   }
   return children;
 }
@@ -75,6 +76,9 @@ export default function AppRouter() {
       <Routes>
 
         {/* ── Rutas publicas (sin layout) ── */}
+        <Route path="/" element={
+          <PublicRoute><Home /></PublicRoute>
+        } />
         <Route path="/login" element={
           <PublicRoute><Login /></PublicRoute>
         } />
@@ -83,7 +87,7 @@ export default function AppRouter() {
         } />
 
         {/* ── Rutas protegidas (con layout sidebar + topbar) ── */}
-        <Route path="/" element={
+        <Route path="/app" element={
           <PrivateRoute><Layout /></PrivateRoute>
         }>
 
@@ -119,8 +123,8 @@ export default function AppRouter() {
           } />
         </Route>
 
-        {/* Ruta 404 — redirigir al login */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* Ruta 404 — redirigir al inicio */}
+        <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
     </BrowserRouter>
@@ -130,5 +134,5 @@ export default function AppRouter() {
 /** Redirige al inicio correcto segun el rol del usuario */
 function RedirectPorRol() {
   const { esAdmin } = useAuth();
-  return <Navigate to={esAdmin() ? '/dashboard' : '/mi-perfil'} replace />;
+  return <Navigate to={esAdmin() ? '/app/dashboard' : '/app/mi-perfil'} replace />;
 }

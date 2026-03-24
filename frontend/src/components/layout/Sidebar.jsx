@@ -25,17 +25,17 @@ const IcoUserPlus   = () => <svg width="18" height="18" viewBox="0 0 24 24" fill
 
 /* ── Definicion de los items de navegacion por seccion ── */
 const navAdmin = [
-  { to: '/dashboard',    label: 'Dashboard',     Icon: IcoDashboard },
-  { to: '/posiciones',   label: 'Posiciones',    Icon: IcoBriefcase },
-  { to: '/departamentos',label: 'Departamentos', Icon: IcoBuilding  },
-  { to: '/asistencia',   label: 'Asistencia',    Icon: IcoCalendar  },
-  { to: '/reportes',     label: 'Reportes',      Icon: IcoChart     },
-  { to: '/registro',     label: 'Registrar usuario', Icon: IcoUserPlus },
+  { to: '/app/dashboard',    label: 'Dashboard',     Icon: IcoDashboard },
+  { to: '/app/posiciones',   label: 'Posiciones',    Icon: IcoBriefcase },
+  { to: '/app/departamentos',label: 'Departamentos', Icon: IcoBuilding  },
+  { to: '/app/asistencia',   label: 'Asistencia',    Icon: IcoCalendar  },
+  { to: '/app/reportes',     label: 'Reportes',      Icon: IcoChart     },
+  { to: '/app/registro',     label: 'Registrar usuario', Icon: IcoUserPlus },
 ];
 
 const navEmpleado = [
-  { to: '/mi-perfil',     label: 'Mi Perfil',     Icon: IcoUser  },
-  { to: '/mi-asistencia', label: 'Mi Asistencia', Icon: IcoClock },
+  { to: '/app/mi-perfil',     label: 'Mi Perfil',     Icon: IcoUser  },
+  { to: '/app/mi-asistencia', label: 'Mi Asistencia', Icon: IcoClock },
 ];
 
 export default function Sidebar() {
