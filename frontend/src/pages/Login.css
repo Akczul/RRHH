@@ -2,163 +2,297 @@
    Login.css — Pagina de inicio de sesion y estilos de formulario
    ============================================================ */
 
-/* ── Pantalla completa de login ── */
+/* ── Pantalla completa (sin scroll) ── */
 .login-screen {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   background: var(--bg);
+  position: relative;
 }
 
-/* ── Panel de branding (izquierdo) ── */
+/* ── Boton "Volver al inicio" fijo en esquina superior izquierda ── */
+.login-back {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text3);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: var(--radio-sm);
+  transition: color 0.18s, background 0.18s;
+}
+.login-back:hover { color: var(--text2); background: var(--surface2); }
+
+/* ════════════════════════════════════
+   PANEL IZQUIERDO — Features del rol
+════════════════════════════════════ */
 .login-brand {
-  display: none;  /* Oculto en movil */
+  display: none;
   flex: 1;
-  background: var(--sidebar-bg);
-  border-right: 1px solid rgba(255,255,255,0.05);
+  height: 100%;
   flex-direction: column;
-  align-items: flex-start;
   justify-content: center;
-  padding: 60px 56px;
+  padding: 80px 52px 60px;
+  gap: 28px;
   position: relative;
   overflow: hidden;
+  transition: background 0.35s ease, border-color 0.35s ease;
 }
-
-/* Mostrar en pantallas >= 900px */
 @media (min-width: 900px) {
   .login-brand { display: flex; }
 }
 
-/* Logo del branding */
-.login-brand__logo {
-  width: 56px;
-  height: 56px;
+.login-brand--accent {
+  background: linear-gradient(150deg, var(--surface) 0%, color-mix(in srgb, var(--accent) 7%, var(--surface)) 100%);
+  border-right: 1px solid rgba(67, 97, 238, 0.14);
+}
+.login-brand--purple {
+  background: linear-gradient(150deg, var(--surface) 0%, color-mix(in srgb, var(--purple) 7%, var(--surface)) 100%);
+  border-right: 1px solid rgba(139, 92, 246, 0.14);
+}
+
+/* Header del rol */
+.login-brand__role-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.login-brand__role-icon {
+  width: 52px;
+  height: 52px;
   border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.35s, color 0.35s;
+}
+.login-brand__role-icon--accent { background: var(--accent-soft); color: var(--accent); }
+.login-brand__role-icon--purple { background: var(--purple-soft); color: var(--purple); }
+
+.login-brand__role-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.025em;
+  margin-bottom: 5px;
+}
+.login-brand__role-sub {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+/* Lista de features */
+.login-brand__features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-brand__feat {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 13.5px;
+  color: var(--text2);
+  padding: 12px 16px;
+  border-radius: var(--radio);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  transition: background 0.18s, border-color 0.18s;
+}
+.login-brand__feat:hover { background: var(--surface3); border-color: var(--border2); }
+
+.login-brand__feat-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.35s, color 0.35s;
+}
+.login-brand__feat--accent .login-brand__feat-icon { background: var(--accent-soft); color: var(--accent); }
+.login-brand__feat--purple .login-brand__feat-icon { background: var(--purple-soft); color: var(--purple); }
+
+/* Decoracion de fondo */
+.login-brand__deco {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  bottom: -160px;
+  right: -80px;
+  pointer-events: none;
+  transition: background 0.35s;
+}
+.login-brand--accent .login-brand__deco { background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%); }
+.login-brand--purple .login-brand__deco { background: radial-gradient(circle, var(--purple-soft) 0%, transparent 70%); }
+
+/* ════════════════════════════════════
+   PANEL DERECHO — Formulario
+════════════════════════════════════ */
+.login-panel {
+  width: 430px;
+  flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 36px;
+  background: var(--bg);
+}
+@media (max-width: 899px) {
+  .login-panel { width: 100%; }
+}
+
+/* Tarjeta del formulario */
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Branding dentro del formulario */
+.login-card__brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.login-card__logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   background: var(--grad-accent);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Syne', sans-serif;
-  font-size: 28px;
+  font-size: 16px;
   font-weight: 800;
   color: #fff;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 24px rgba(67,97,238,0.4);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-accent);
 }
-
-/* Nombre del sistema */
-.login-brand__name {
-  font-family: 'Syne', sans-serif;
-  font-size: 36px;
-  font-weight: 800;
-  color: #e8eefa;
-  letter-spacing: -0.03em;
-  margin-bottom: 14px;
-}
-
-/* Tagline descriptiva */
-.login-brand__tagline {
-  font-size: 15px;
-  color: rgba(255,255,255,0.35);
-  line-height: 1.65;
-  max-width: 320px;
-}
-
-/* Decoracion de fondo (circulo grande, semi-transparente) */
-.login-brand__deco {
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(67,97,238,0.12) 0%, transparent 70%);
-  bottom: -120px;
-  right: -100px;
-  pointer-events: none;
-}
-
-/* ── Panel del formulario (derecho) ── */
-.login-panel {
-  flex: 1;
-  max-width: 480px;
+.login-card__brand-text {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 32px;
-
-  /* En pantallas pequenas ocupa todo el ancho */
-  @media (max-width: 899px) {
-    max-width: 100%;
-  }
+  flex-direction: column;
+  gap: 1px;
+}
+.login-card__brand-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.login-card__brand-sub {
+  font-size: 11.5px;
+  color: var(--text3);
 }
 
-/* ── Tarjeta del formulario ── */
-.login-card {
-  width: 100%;
-  max-width: 400px;
-}
-
-/* Encabezado de la tarjeta */
-.login-card__header {
-  margin-bottom: 28px;
-}
-
-/* Titulo principal del formulario */
+/* Titulo y subtitulo */
+.login-card__header { display: flex; flex-direction: column; gap: 4px; }
 .login-card__title {
   font-family: 'Syne', sans-serif;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--text);
-  letter-spacing: -0.03em;
-  margin-bottom: 6px;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
 }
-
-/* Subtitulo del formulario */
 .login-card__sub {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text2);
 }
 
-/* Alerta de error en el formulario */
-.login-card__alert {
-  margin-bottom: 20px;
+/* ── Tabs de seleccion de rol ── */
+.login-tabs {
+  display: flex;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+  padding: 4px;
+  gap: 4px;
+}
+.login-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border-radius: calc(var(--radio) - 2px);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text3);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  white-space: nowrap;
+}
+.login-tab:hover:not(.login-tab--active-accent):not(.login-tab--active-purple) {
+  color: var(--text2);
+  background: var(--surface3);
+}
+.login-tab--active-accent {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 12px var(--accent-glow);
+}
+.login-tab--active-purple {
+  background: var(--purple);
+  color: #fff;
+  box-shadow: 0 2px 12px var(--purple-soft);
 }
 
 /* ── Formulario ── */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
-/* ── Campo de formulario generico ── */
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
+/* ── Campos de formulario ── */
+.field { display: flex; flex-direction: column; gap: 7px; }
 
-/* Fila de etiqueta + enlace */
 .field__label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
-/* Etiqueta del campo */
 .field__label {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--text2);
-  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
-
-/* Enlace pequeno dentro del campo (ej: Olvide mi contrasena) */
 .field__link {
   font-size: 12px;
   color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.15s;
 }
-.field__link:hover { text-decoration: underline; }
+.field__link:hover { opacity: 0.8; text-decoration: underline; }
 
-/* Input base de formulario */
 .field__input {
   width: 100%;
   padding: 11px 14px;
@@ -170,26 +304,16 @@
   outline: none;
   transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
 }
-
-/* Focus del input */
 .field__input:focus {
   border-color: var(--accent);
   background: var(--surface3);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
-
-/* Placeholder */
 .field__input::placeholder { color: var(--text3); }
 
-/* Contenedor del input con icono de ojo */
-.field__input-wrap {
-  position: relative;
-}
-.field__input-wrap .field__input {
-  padding-right: 44px;
-}
+.field__input-wrap { position: relative; }
+.field__input-wrap .field__input { padding-right: 44px; }
 
-/* Boton de mostrar/ocultar contrasena */
 .field__eye {
   position: absolute;
   top: 50%;
@@ -206,3 +330,11 @@
   transition: color 0.15s, background 0.15s;
 }
 .field__eye:hover { color: var(--text2); background: var(--surface3); }
+
+/* ── Footer del formulario ── */
+.login-card__footer {
+  font-size: 13px;
+  color: var(--text3);
+  text-align: center;
+  padding-top: 2px;
+}

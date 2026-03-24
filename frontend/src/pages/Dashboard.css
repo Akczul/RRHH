@@ -6,6 +6,71 @@
 /* ── Contenedor del dashboard ── */
 .dash { display: flex; flex-direction: column; gap: 24px; }
 
+/* ── Banner de bienvenida ── */
+.dash__welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, var(--surface) 0%, color-mix(in srgb, var(--accent) 8%, var(--surface)) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radio-lg);
+  padding: 24px 28px;
+  gap: 16px;
+}
+
+.dash__welcome-caption {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.dash__welcome-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.dash__welcome-date {
+  font-size: 12.5px;
+  color: var(--text3);
+  text-transform: capitalize;
+}
+
+.dash__welcome-meta { flex-shrink: 0; }
+
+.dash__welcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background: var(--success-soft);
+  border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--success);
+}
+
+.dash__welcome-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.8); }
+}
+
 /* ── Grid de tarjetas de estadisticas ── */
 .dash__stats {
   display: grid;
@@ -21,30 +86,66 @@
 }
 @media (max-width: 860px) {
   .dash__cols { grid-template-columns: 1fr; }
+  .dash__welcome { flex-direction: column; align-items: flex-start; }
+}
+
+/* ── Header de card mejorado ── */
+.card__header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card__count {
+  font-size: 11.5px;
+  color: var(--text3);
+  font-weight: 400;
 }
 
 /* ── Lista de departamentos ── */
 .dash__dept-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  padding: 4px 0;
 }
 
 /* Item de departamento */
 .dash__dept-item {
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.dash__dept-item:last-child { border-bottom: none; }
+.dash__dept-item:hover { background: var(--surface2); }
+
+.dash__dept-info { display: flex; flex-direction: column; gap: 6px; }
+
+.dash__dept-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--border);
-  gap: 12px;
+  gap: 8px;
 }
-.dash__dept-item:last-child { border-bottom: none; }
 
-/* Columna de informacion del departamento */
-.dash__dept-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.dash__dept-name { font-size: 14px; font-weight: 600; color: var(--text); }
-.dash__dept-desc { font-size: 12px; color: var(--text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dash__dept-name { font-size: 13.5px; font-weight: 600; color: var(--text); }
+.dash__dept-count { font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0; }
+.dash__dept-desc { font-size: 11.5px; color: var(--text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Barra de proporcion */
+.dash__dept-bar-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dash__dept-bar-fill {
+  height: 100%;
+  background: var(--grad-accent);
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 4px;
+}
 
 /* ============================================================
    ESTILOS COMPARTIDOS — usados en multiples paginas
