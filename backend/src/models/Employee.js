@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import './Department.js';
+import './Position.js';
 
 const employeeSchema = new mongoose.Schema(
   {
