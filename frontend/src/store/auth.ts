@@ -11,7 +11,7 @@ export interface AuthState {
   error: string | null
   login: (creds: LoginDto) => Promise<void>
   register: (creds: RegisterDto) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
   checkSession: () => Promise<boolean>
   clearError: () => void
 }
@@ -29,9 +29,8 @@ export const useAuthStore = create<AuthState>()(
         set({ loading: true, error: null })
         try {
           const res = await axios.post('/auth/login', creds)
-          const { token, user } = res.data
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-          set({ user, isAuthenticated: true, token, loading: false })
+          const user: User = res.data.user
+          set({ user, isAuthenticated: true, token: null, loading: false })
         } catch (err: any) {
           const msg = err?.response?.data?.message ?? err?.message ?? 'Login failed'
           set({ error: msg, loading: false })
@@ -42,36 +41,38 @@ export const useAuthStore = create<AuthState>()(
         set({ loading: true, error: null })
         try {
           const res = await axios.post('/auth/register', creds)
-          const { token, user } = res.data
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-          set({ user, isAuthenticated: true, token, loading: false })
+          const user: User = res.data.user
+          set({ user, isAuthenticated: true, token: null, loading: false })
         } catch (err: any) {
           const msg = err?.response?.data?.message ?? err?.message ?? 'Registration failed'
           set({ error: msg, loading: false })
         }
       },
 
-      logout: () => {
-        delete axios.defaults.headers.common['Authorization']
+      logout: async () => {
+        try {
+          await axios.post('/auth/logout')
+        } catch {
+          // ignore errors; always clear local state
+        }
         set({ user: null, isAuthenticated: false, token: null })
       },
 
       checkSession: async () => {
-        const token = get().token
-        if (!token) return false
         try {
-          const res = await axios.get('/auth/me')
+          const res = await axios.get('/auth/profile')
           const user: User = res.data.user
           set({ user, isAuthenticated: true })
           return true
         } catch {
+          set({ user: null, isAuthenticated: false })
           return false
         }
       },
 
       clearError: () => set({ error: null }),
     })),
-    { name: 'auth-storage', partialize: (state: any) => ({ token: state.token, isAuthenticated: state.isAuthenticated }) }
+    { name: 'auth-storage', partialize: (state: any) => ({ isAuthenticated: state.isAuthenticated }) }
   )
 )
 )

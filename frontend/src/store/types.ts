@@ -10,7 +10,7 @@ export interface LoginDto {
 }
 
 export interface RegisterDto {
-  name?: string
+  name: string
   email: string
   password: string
 }
