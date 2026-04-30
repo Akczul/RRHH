@@ -137,3 +137,66 @@ describe('Autenticación - POST /api/auth/login', () => {
     expect(response.body.success).toBe(false);
   });
 });
+
+describe('Autenticacion - perfil, recuperacion y registro admin', () => {
+  test('PUT /api/auth/profile actualiza nombre del usuario autenticado', async () => {
+    const agent = request.agent(app);
+
+    await agent
+      .post('/api/auth/register')
+      .send({
+        name: 'Juan Perez',
+        email: 'juan@example.com',
+        password: 'Password123'
+      })
+      .expect(201);
+
+    const response = await agent
+      .put('/api/auth/profile')
+      .send({ name: 'Juan Actualizado' })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.user.name).toBe('Juan Actualizado');
+  });
+
+  test('POST /api/auth/recover devuelve respuesta controlada', async () => {
+    const response = await request(app)
+      .post('/api/auth/recover')
+      .send({ email: 'desconocido@example.com' })
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+  });
+
+  test('POST /api/auth/register-admin permite crear admin solo con rol admin', async () => {
+    const agent = request.agent(app);
+
+    await User.create({
+      name: 'Admin',
+      email: 'admin@example.com',
+      password: 'Password123',
+      role: 'admin'
+    });
+
+    await agent
+      .post('/api/auth/login')
+      .send({
+        email: 'admin@example.com',
+        password: 'Password123'
+      })
+      .expect(200);
+
+    const response = await agent
+      .post('/api/auth/register-admin')
+      .send({
+        name: 'Nuevo Admin',
+        email: 'nuevo.admin@example.com',
+        password: 'Password123',
+        role: 'admin'
+      })
+      .expect(201);
+
+    expect(response.body.user.role).toBe('admin');
+  });
+});

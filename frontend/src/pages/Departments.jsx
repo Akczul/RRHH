@@ -1,10 +1,5 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
-import {
-  obtenerDepartamentosAPI,
-  crearDepartamentoAPI,
-  actualizarDepartamentoAPI,
-  eliminarDepartamentoAPI
-} from '../services/api';
+import { useDepartmentStore } from '../stores/useDepartmentStore';
 import Modal   from '../components/ui/Modal';
 import Button  from '../components/ui/Button';
 import Badge   from '../components/ui/Badge';
@@ -90,12 +85,16 @@ function FormDepartamento({ inicial, guardando, error, onGuardar, onCerrarError 
    Conectado al endpoint real GET/POST/PUT/DELETE /api/categories
    ================================================================ */
 export default function Departments() {
-  /* Lista de departamentos cargados del backend */
-  const [departamentos, setDepartamentos] = useState([]);
-  /* Estado de carga inicial */
-  const [cargando, setCargando] = useState(true);
-  /* Error de carga general */
-  const [error, setError] = useState(null);
+  const {
+    departments: departamentos,
+    loading: cargando,
+    error,
+    fetchDepartments,
+    createDepartment,
+    updateDepartment,
+    deleteDepartment,
+    clearDepartmentError
+  } = useDepartmentStore();
   /* Termino de busqueda */
   const [busqueda, setBusqueda] = useState('');
 
@@ -113,18 +112,12 @@ export default function Departments() {
 
   /* ── Carga inicial de departamentos ── */
   const cargar = useCallback(async () => {
-    setCargando(true);
-    setError(null);
     try {
-      const data = await obtenerDepartamentosAPI();
-      /* El backend devuelve { success, categories } */
-      setDepartamentos(data.categories ?? []);
-    } catch (e) {
-      setError(e.message ?? 'Error al cargar departamentos');
-    } finally {
-      setCargando(false);
+      await fetchDepartments();
+    } catch {
+      /* El store conserva el error para la UI. */
     }
-  }, []);
+  }, [fetchDepartments]);
 
   useEffect(() => { cargar(); }, [cargar]);
 
@@ -139,9 +132,8 @@ export default function Departments() {
     setGuardando(true);
     setErrorAccion(null);
     try {
-      await crearDepartamentoAPI({ name: nombre, description: descripcion });
+      await createDepartment({ name: nombre, description: descripcion });
       setModalCrear(false);
-      cargar();
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al crear');
     } finally {
@@ -154,9 +146,8 @@ export default function Departments() {
     setGuardando(true);
     setErrorAccion(null);
     try {
-      await actualizarDepartamentoAPI(editando._id, { name: nombre, description: descripcion });
+      await updateDepartment(editando._id, { name: nombre, description: descripcion });
       setEditando(null);
-      cargar();
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al actualizar');
     } finally {
@@ -169,9 +160,8 @@ export default function Departments() {
     setGuardando(true);
     setErrorAccion(null);
     try {
-      await eliminarDepartamentoAPI(eliminando._id);
+      await deleteDepartment(eliminando._id);
       setEliminando(null);
-      cargar();
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al eliminar');
     } finally {
@@ -228,7 +218,7 @@ export default function Departments() {
 
       {/* ── Error de carga ── */}
       {!cargando && error && (
-        <Alert tipo="error" onCerrar={() => setError(null)}>{error}</Alert>
+        <Alert tipo="error" onCerrar={clearDepartmentError}>{error}</Alert>
       )}
 
       {/* ── Tabla de departamentos ── */}

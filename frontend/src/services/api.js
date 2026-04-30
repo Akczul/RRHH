@@ -105,6 +105,16 @@ export const registrarAPI = (datos) =>
   });
 
 /**
+ * Crear usuario desde panel administrador. Permite asignar rol.
+ * @param {{ name, email, password, role }} datos
+ */
+export const registrarAdminAPI = (datos) =>
+  peticion('/auth/register-admin', {
+    method: 'POST',
+    body: JSON.stringify(datos),
+  });
+
+/**
  * Cerrar sesión. El servidor limpia la cookie httpOnly.
  */
 export const logoutAPI = () =>
@@ -137,6 +147,37 @@ export const recuperarContrasenaAPI = (email) =>
     method: 'POST',
     body: JSON.stringify({ email }),
   });
+
+/* ============================================================
+   ASISTENCIA Y REPORTES — integracion disponible para futuras vistas
+   ============================================================ */
+
+export const registrarEntradaAPI = (datos = {}) =>
+  peticion('/attendance/checkin', {
+    method: 'POST',
+    body: JSON.stringify(datos),
+  });
+
+export const registrarSalidaAPI = (datos = {}) =>
+  peticion('/attendance/checkout', {
+    method: 'PUT',
+    body: JSON.stringify(datos),
+  });
+
+export const obtenerAsistenciaPorFechaAPI = (date) =>
+  peticion(`/attendance/date/${date}`);
+
+export const obtenerAsistenciaEmpleadoAPI = (employeeId) =>
+  peticion(`/attendance/${employeeId}`);
+
+export const obtenerReporteAsistenciaMensualAPI = ({ month, year }) =>
+  peticion(`/reports/attendance/monthly?month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`);
+
+export const obtenerReporteHeadcountAPI = () =>
+  peticion('/reports/headcount');
+
+export const obtenerResumenEmpleadoAPI = (employeeId) =>
+  peticion(`/reports/employee/${employeeId}/summary`);
 
 /* ============================================================
    DEPARTAMENTOS — mapeados al recurso /categories del backend

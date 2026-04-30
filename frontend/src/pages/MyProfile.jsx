@@ -1,6 +1,6 @@
-﻿import { useState, useEffect, useContext } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { obtenerPerfilAPI, actualizarPerfilAPI } from '../services/api';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import Avatar from '../components/ui/Avatar';
 import Badge  from '../components/ui/Badge';
 import Alert  from '../components/ui/Alert';
@@ -59,7 +59,7 @@ function FilaPerfil({ icono, etiqueta, valor }) {
   autenticado y permite editar nombre y contrasena desde un modal.
    ================================================================ */
 export default function MyProfile() {
-  const { refrescarPerfil } = useContext(AuthContext);
+  const { refrescarPerfil } = useAuth();
 
   /* Datos del usuario cargados del backend */
   const [usuario, setUsuario] = useState(null);
