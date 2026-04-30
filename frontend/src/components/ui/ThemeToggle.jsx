@@ -1,7 +1,7 @@
 ﻿/**
  * ThemeToggle.jsx — Interruptor de tema oscuro/claro.
  *
- * Usa el contexto ThemeContext para alternar entre temas.
+ * Usa Zustand para alternar entre temas.
  */
 import useTheme from '../../hooks/useTheme';
 import './ThemeToggle.css';

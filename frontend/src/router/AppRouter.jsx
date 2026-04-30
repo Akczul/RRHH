@@ -40,14 +40,14 @@ import MyAttendance from '../pages/MyAttendance';
 /** Ruta privada: solo usuarios autenticados */
 function PrivateRoute({ children }) {
   const { estaAutenticado, cargando } = useAuth();
-  if (cargando) return null;  /* Esperar a que se resuelva la sesion */
+  if (cargando) return <RouteLoader />;
   return estaAutenticado ? children : <Navigate to="/login" replace />;
 }
 
 /** Ruta de administrador: solo rol 'admin' */
 function AdminRoute({ children }) {
   const { esAdmin, estaAutenticado, cargando } = useAuth();
-  if (cargando) return null;
+  if (cargando) return <RouteLoader />;
   if (!estaAutenticado) return <Navigate to="/login" replace />;
   return esAdmin() ? children : <Navigate to="/app/mi-perfil" replace />;
 }
@@ -55,14 +55,14 @@ function AdminRoute({ children }) {
 /** Ruta de empleado: rol 'employee' (admin tambien puede verlas) */
 function EmployeeRoute({ children }) {
   const { estaAutenticado, cargando } = useAuth();
-  if (cargando) return null;
+  if (cargando) return <RouteLoader />;
   return estaAutenticado ? children : <Navigate to="/login" replace />;
 }
 
 /** Ruta publica: si ya esta autenticado redirige segun rol */
 function PublicRoute({ children }) {
   const { estaAutenticado, esAdmin, cargando } = useAuth();
-  if (cargando) return null;
+  if (cargando) return <RouteLoader />;
   if (estaAutenticado) {
     return <Navigate to={esAdmin() ? '/app/dashboard' : '/app/mi-perfil'} replace />;
   }
@@ -84,6 +84,9 @@ export default function AppRouter() {
         } />
         <Route path="/recuperar-contrasena" element={
           <PublicRoute><RecoverPassword /></PublicRoute>
+        } />
+        <Route path="/register" element={
+          <PublicRoute><Register /></PublicRoute>
         } />
 
         {/* ── Rutas protegidas (con layout sidebar + topbar) ── */}
@@ -135,4 +138,18 @@ export default function AppRouter() {
 function RedirectPorRol() {
   const { esAdmin } = useAuth();
   return <Navigate to={esAdmin() ? '/app/dashboard' : '/app/mi-perfil'} replace />;
+}
+
+function RouteLoader() {
+  return (
+    <div style={{
+      minHeight: '100vh',
+      display: 'grid',
+      placeItems: 'center',
+      background: 'var(--bg)',
+      color: 'var(--text)'
+    }}>
+      <span className="spinner spinner--lg" aria-label="Cargando sesion" />
+    </div>
+  );
 }

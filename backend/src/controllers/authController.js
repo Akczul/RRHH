@@ -36,7 +36,8 @@ export const register = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password
+      password,
+      role: 'employee'
     });
 
     // Generar token
@@ -66,6 +67,54 @@ export const register = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error en el registro',
+      error: error.message
+    });
+  }
+};
+
+// REGISTER ADMIN: crear usuarios desde una sesion con rol admin
+export const registerByAdmin = async (req, res) => {
+  try {
+    const { name, email, password, role = 'employee' } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Por favor completa todos los campos'
+      });
+    }
+
+    if (!['employee', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rol invalido'
+      });
+    }
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({
+        success: false,
+        message: 'El email ya esta registrado'
+      });
+    }
+
+    const user = await User.create({ name, email, password, role });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Usuario creado correctamente',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error creando usuario',
       error: error.message
     });
   }
@@ -178,4 +227,75 @@ export const getProfile = async (req, res) => {
       error: error.message
     });
   }
+};
+
+// UPDATE PROFILE: actualizar nombre y/o contrasena del usuario autenticado
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, password } = req.body;
+
+    if (!name && !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Envia al menos un campo para actualizar'
+      });
+    }
+
+    const user = await User.findById(req.user.id).select('+password');
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    if (name) user.name = name;
+
+    if (password) {
+      if (password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: 'La contrasena debe tener al menos 6 caracteres'
+        });
+      }
+      user.password = password;
+    }
+
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: 'Perfil actualizado correctamente',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error al actualizar perfil',
+      error: error.message
+    });
+  }
+};
+
+// RECOVER: respuesta controlada sin revelar si el email existe
+export const recoverPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: 'Por favor ingresa tu correo electronico'
+    });
+  }
+
+  return res.json({
+    success: true,
+    message: 'Si el correo esta registrado, recibiras instrucciones de recuperacion'
+  });
 };

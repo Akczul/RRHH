@@ -1,11 +1,5 @@
-// useTheme.js — Hook para consumir ThemeContext
-import { useContext } from 'react';
-import { ThemeContext } from '../context/ThemeContext';
+import { useThemeStore } from '../stores/useThemeStore';
 
-const useTheme = () => {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme debe usarse dentro de ThemeProvider');
-  return ctx;
-};
+const useTheme = () => useThemeStore();
 
 export default useTheme;
