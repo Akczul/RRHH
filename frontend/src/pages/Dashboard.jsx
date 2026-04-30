@@ -15,7 +15,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { obtenerDepartamentosAPI, obtenerPosicionesAPI } from '../services/api';
+import { useCatalogStore } from '../stores/useCatalogStore';
 import StatCard from '../components/ui/StatCard';
 import Badge    from '../components/ui/Badge';
 import './Dashboard.css';
@@ -36,32 +36,26 @@ const IcoStar      = () => <svg width="20" height="20" viewBox="0 0 24 24" fill=
 
 export default function Dashboard() {
   const { usuario } = useAuth();
-
-  /* ── Estado de datos del backend ── */
-  const [departamentos, setDepartamentos] = useState([]);
-  const [posiciones,    setPosiciones]    = useState([]);
-  const [cargando,      setCargando]      = useState(true);
-  const [error,         setError]         = useState('');
+  const {
+    departments: departamentos,
+    positions: posiciones,
+    loading: cargando,
+    error,
+    fetchCatalogs
+  } = useCatalogStore();
+  const [errorLocal, setErrorLocal] = useState('');
 
   /* ── Cargar datos al montar el componente ── */
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        /* Hacer ambas peticiones en paralelo para mayor eficiencia */
-        const [resDepts, resPos] = await Promise.all([
-          obtenerDepartamentosAPI(),
-          obtenerPosicionesAPI(),
-        ]);
-        setDepartamentos(resDepts.categories || []);
-        setPosiciones(resPos.products || []);
+        await fetchCatalogs();
       } catch (err) {
-        setError(err.message || 'Error al cargar los datos');
-      } finally {
-        setCargando(false);
+        setErrorLocal(err.message || 'Error al cargar los datos');
       }
     };
     cargarDatos();
-  }, []);
+  }, [fetchCatalogs]);
 
   /* ── Calculos derivados ── */
   const salarioPromedio = posiciones.length
@@ -119,7 +113,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── Mensaje de error ── */}
-      {error && <div className="alert alert--error" style={{ marginBottom: 20 }}>{error}</div>}
+      {(error || errorLocal) && <div className="alert alert--error" style={{ marginBottom: 20 }}>{error || errorLocal}</div>}
 
       {/* ── Tarjetas de estadisticas ── */}
       <div className="dash__stats">

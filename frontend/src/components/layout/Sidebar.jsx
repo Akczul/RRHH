@@ -77,19 +77,19 @@ export default function Sidebar() {
 
       {/* ── Menu de navegacion ── */}
       <nav className="sidebar__nav">
-        {items.map(({ to, label, Icon }) => (
+        {items.map((item) => (
           <NavLink
-            key={to}
-            to={to}
+            key={item.to}
+            to={item.to}
             /* React Router anade la clase 'active' automaticamente */
             className={({ isActive }) =>
               `sidebar__link${isActive ? ' sidebar__link--active' : ''}`
             }
           >
             {/* Icono de la ruta */}
-            <span className="sidebar__link-icon"><Icon /></span>
+            <span className="sidebar__link-icon"><item.Icon /></span>
             {/* Etiqueta de la ruta */}
-            <span className="sidebar__link-label">{label}</span>
+            <span className="sidebar__link-label">{item.label}</span>
           </NavLink>
         ))}
       </nav>

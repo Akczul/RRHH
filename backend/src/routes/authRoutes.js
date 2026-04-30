@@ -1,11 +1,15 @@
 import express from 'express';
 import {
   register,
+  registerByAdmin,
   login,
   logout,
-  getProfile
+  getProfile,
+  updateProfile,
+  recoverPassword
 } from '../controllers/authController.js';
 import { protect } from '../middlewares/authMiddleware.js';
+import { authorize } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
@@ -48,6 +52,7 @@ const router = express.Router();
  */
 // Rutas públicas (sin protección)
 router.post('/register', register);
+router.post('/register-admin', protect, authorize('admin'), registerByAdmin);
 
 /**
  * @swagger
@@ -87,6 +92,7 @@ router.post('/register', register);
  *         $ref: '#/components/responses/ServerError'
  */
 router.post('/login', login);
+router.post('/recover', recoverPassword);
 
 /**
  * @swagger
@@ -148,5 +154,6 @@ router.post('/logout', logout);
  *         $ref: '#/components/responses/ServerError'
  */
 router.get('/profile', protect, getProfile);
+router.put('/profile', protect, updateProfile);
 
 export default router;

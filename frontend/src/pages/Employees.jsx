@@ -1,11 +1,6 @@
 ﻿import { useState, useEffect, useCallback } from 'react';
-import {
-  obtenerPosicionesAPI,
-  crearPosicionAPI,
-  actualizarPosicionAPI,
-  eliminarPosicionAPI,
-  obtenerDepartamentosAPI
-} from '../services/api';
+import { obtenerDepartamentosAPI } from '../services/api';
+import { usePositionStore } from '../stores/usePositionStore';
 import Modal   from '../components/ui/Modal';
 import Button  from '../components/ui/Button';
 import Badge   from '../components/ui/Badge';
@@ -144,14 +139,18 @@ function FormPosicion({ inicial, departamentos, guardando, error, onGuardar, onC
    - categoryId = departamento (ref a Category)
    ================================================================ */
 export default function Employees() {
-  /* Lista de posiciones del backend */
-  const [posiciones, setPosiciones] = useState([]);
+  const {
+    positions: posiciones,
+    loading: cargando,
+    error,
+    fetchPositions,
+    createPosition,
+    updatePosition,
+    deletePosition,
+    clearPositionError
+  } = usePositionStore();
   /* Lista de departamentos para el select */
   const [departamentos, setDepartamentos] = useState([]);
-  /* Carga inicial */
-  const [cargando, setCargando] = useState(true);
-  /* Error al cargar datos */
-  const [error, setError] = useState(null);
   /* Texto de busqueda */
   const [busqueda, setBusqueda] = useState('');
 
@@ -166,21 +165,16 @@ export default function Employees() {
 
   /* ── Carga paralela: posiciones + departamentos ── */
   const cargar = useCallback(async () => {
-    setCargando(true);
-    setError(null);
     try {
-      const [rPos, rDept] = await Promise.all([
-        obtenerPosicionesAPI(),
+      const [, rDept] = await Promise.all([
+        fetchPositions(),
         obtenerDepartamentosAPI()
       ]);
-      setPosiciones(rPos.products ?? []);
       setDepartamentos(rDept.categories ?? []);
-    } catch (e) {
-      setError(e.message ?? 'Error al cargar posiciones');
-    } finally {
-      setCargando(false);
+    } catch {
+      /* El store conserva el error de posiciones para la UI. */
     }
-  }, []);
+  }, [fetchPositions]);
 
   useEffect(() => { cargar(); }, [cargar]);
 
@@ -199,14 +193,13 @@ export default function Employees() {
     setGuardando(true);
     setErrorAccion(null);
     try {
-      await crearPosicionAPI({
+      await createPosition({
         name: nombre,
         description: descripcion,
         price: salario !== '' ? Number(salario) : 0,
         categoryId: departamentoId || undefined
       });
       setModalCrear(false);
-      cargar();
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al crear');
     } finally {
@@ -219,14 +212,13 @@ export default function Employees() {
     setGuardando(true);
     setErrorAccion(null);
     try {
-      await actualizarPosicionAPI(editando._id, {
+      await updatePosition(editando._id, {
         name: nombre,
         description: descripcion,
         price: salario !== '' ? Number(salario) : 0,
         categoryId: departamentoId || undefined
       });
       setEditando(null);
-      cargar();
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al actualizar');
     } finally {
@@ -239,9 +231,8 @@ export default function Employees() {
     setGuardando(true);
     setErrorAccion(null);
     try {
-      await eliminarPosicionAPI(eliminando._id);
+      await deletePosition(eliminando._id);
       setEliminando(null);
-      cargar();
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al eliminar');
     } finally {
@@ -308,7 +299,7 @@ export default function Employees() {
 
       {/* ── Error general ── */}
       {!cargando && error && (
-        <Alert tipo="error" onCerrar={() => setError(null)}>{error}</Alert>
+        <Alert tipo="error" onCerrar={clearPositionError}>{error}</Alert>
       )}
 
       {/* ── Tabla de posiciones ── */}

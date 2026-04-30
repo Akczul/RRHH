@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registrarAPI } from '../services/api';
+import { registrarAPI, registrarAdminAPI } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 import Button from '../components/ui/Button';
 import Alert  from '../components/ui/Alert';
 import './Register.css';
@@ -16,6 +17,8 @@ const IcoEyeOff = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="no
    ================================================================ */
 export default function Register() {
   const navigate = useNavigate();
+  const { esAdmin, estaAutenticado } = useAuth();
+  const puedeAsignarRol = estaAutenticado && esAdmin();
 
   /* ── Estado del formulario ── */
   const [form, setForm] = useState({ nombre: '', email: '', password: '', confirmar: '', rol: 'employee' });
@@ -47,12 +50,18 @@ export default function Register() {
 
     setCargando(true);
     try {
-      const datos = await registrarAPI({
-        name:     form.nombre.trim(),
-        email:    form.email.trim(),
-        password: form.password,
-        role:     form.rol
-      });
+      const datos = puedeAsignarRol
+        ? await registrarAdminAPI({
+            name: form.nombre.trim(),
+            email: form.email.trim(),
+            password: form.password,
+            role: form.rol
+          })
+        : await registrarAPI({
+            name: form.nombre.trim(),
+            email: form.email.trim(),
+            password: form.password
+          });
       /* Mostrar nombre del usuario creado en el mensaje de exito */
       setExito(`Usuario "${datos.user?.name ?? form.nombre}" creado correctamente.`);
       /* Limpiar formulario para permitir crear otro */
@@ -136,18 +145,25 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Rol del usuario */}
-          <div className="field">
-            <label className="field__label" htmlFor="rg-rol">Rol en el sistema *</label>
-            <select id="rg-rol" name="rol" className="field__input field__select"
-              value={form.rol} onChange={cambiar}>
-              <option value="employee">Empleado</option>
-              <option value="admin">Administrador</option>
-            </select>
-            <span className="field__hint">
-              Administrador: acceso total. Empleado: acceso solo a su perfil y asistencia.
-            </span>
-          </div>
+          {puedeAsignarRol ? (
+            <div className="field">
+              <label className="field__label" htmlFor="rg-rol">Rol en el sistema *</label>
+              <select id="rg-rol" name="rol" className="field__input field__select"
+                value={form.rol} onChange={cambiar}>
+                <option value="employee">Empleado</option>
+                <option value="admin">Administrador</option>
+              </select>
+              <span className="field__hint">
+                Solo un administrador autenticado puede crear cuentas admin.
+              </span>
+            </div>
+          ) : (
+            <div className="field">
+              <span className="field__hint">
+                El registro publico crea una cuenta de empleado. Las cuentas admin se crean desde el panel interno.
+              </span>
+            </div>
+          )}
 
           {/* Acciones */}
           <div className="registro__footer">
