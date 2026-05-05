@@ -10,6 +10,23 @@
   background: var(--bg);
 }
 
+.layout__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 10, 20, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 110;
+}
+
+.layout__backdrop--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
 /* ── Columna principal (todo excepto el sidebar) ── */
 .layout__main {
   /* Desplazar a la derecha del sidebar */
@@ -34,4 +51,14 @@
   overflow-y: auto;
   /* Altura minima para scroll correcto */
   min-height: calc(100vh - var(--topbar-h));
+}
+
+@media (max-width: 1024px) {
+  .layout__main {
+    margin-left: 0;
+  }
+
+  .layout__content {
+    padding: var(--topbar-h) 16px 20px;
+  }
 }

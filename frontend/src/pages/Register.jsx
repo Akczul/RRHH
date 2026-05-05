@@ -17,8 +17,8 @@ const IcoEyeOff = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="no
    ================================================================ */
 export default function Register() {
   const navigate = useNavigate();
-  const { esAdmin, estaAutenticado } = useAuth();
-  const puedeAsignarRol = estaAutenticado && esAdmin();
+  const { esAdmin, isAuthenticated } = useAuth();
+  const puedeAsignarRol = isAuthenticated && esAdmin();
 
   /* ── Estado del formulario ── */
   const [form, setForm] = useState({ nombre: '', email: '', password: '', confirmar: '', rol: 'employee' });

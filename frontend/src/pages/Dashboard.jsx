@@ -35,7 +35,7 @@ const IcoSalary    = () => <svg width="20" height="20" viewBox="0 0 24 24" fill=
 const IcoStar      = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
 
 export default function Dashboard() {
-  const { usuario } = useAuth();
+  const { user } = useAuth();
   const {
     departments: departamentos,
     positions: posiciones,
@@ -79,7 +79,7 @@ export default function Dashboard() {
   const maxPosiciones = Math.max(...deptosConConteo.map(d => d.totalPosiciones), 1);
 
   /* Obtener primer nombre del usuario */
-  const primerNombre = usuario?.name?.split(' ')[0] || 'Administrador';
+  const primerNombre = user?.name?.split(' ')[0] || 'Administrador';
 
   /* Mostrar skeleton mientras cargan los datos */
   if (cargando) {
