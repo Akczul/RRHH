@@ -38,18 +38,19 @@ const navEmpleado = [
   { to: '/app/mi-asistencia', label: 'Mi Asistencia', Icon: IcoClock },
 ];
 
-export default function Sidebar() {
-  const { usuario, logout, esAdmin } = useAuth();
+export default function Sidebar({ isOpen = false, onClose = () => {} }) {
+  const { user, logout, esAdmin } = useAuth();
   const navigate = useNavigate();
 
   /* Obtener las iniciales del nombre para el avatar */
-  const iniciales = usuario?.name
-    ? usuario.name.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
+  const iniciales = user?.name
+    ? user.name.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
     : '?';
 
   /* Manejar el cierre de sesion con redireccion al login */
   const manejarLogout = async () => {
     await logout();
+    onClose();
     navigate('/login', { replace: true });
   };
 
@@ -57,7 +58,7 @@ export default function Sidebar() {
   const items = esAdmin() ? navAdmin : navEmpleado;
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${isOpen ? ' sidebar--open' : ''}`}>
 
       {/* ── Logo y nombre de la aplicacion ── */}
       <div className="sidebar__brand">
@@ -81,6 +82,7 @@ export default function Sidebar() {
           <NavLink
             key={item.to}
             to={item.to}
+            onClick={onClose}
             /* React Router anade la clase 'active' automaticamente */
             className={({ isActive }) =>
               `sidebar__link${isActive ? ' sidebar__link--active' : ''}`
@@ -104,9 +106,9 @@ export default function Sidebar() {
 
         {/* Nombre y rol del usuario */}
         <div className="sidebar__user-info">
-          <span className="sidebar__user-name">{usuario?.name || 'Usuario'}</span>
+          <span className="sidebar__user-name">{user?.name || 'Usuario'}</span>
           <span className="sidebar__user-role">
-            {usuario?.role === 'admin' ? 'Administrador' : 'Empleado'}
+            {user?.role === 'admin' ? 'Administrador' : 'Empleado'}
           </span>
         </div>
 

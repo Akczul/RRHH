@@ -2,6 +2,8 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import swaggerUi from 'swagger-ui-express';
 import connectDB from './src/config/database.js';
 import swaggerSpec from './src/config/swagger.js';
@@ -14,8 +16,10 @@ import employeeRoutes from './src/routes/employeeRoutes.js';
 import departmentRoutes from './src/routes/departmentRoutes.js';
 import positionRoutes from './src/routes/positionRoutes.js';
 
-// Cargar variables de entorno desde .env
-dotenv.config();
+// Cargar variables de entorno desde .env usando ruta absoluta
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 // Crear la aplicación Express
 const app = express();

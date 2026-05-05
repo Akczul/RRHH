@@ -39,31 +39,31 @@ import MyAttendance from '../pages/MyAttendance';
 
 /** Ruta privada: solo usuarios autenticados */
 function PrivateRoute({ children }) {
-  const { estaAutenticado, cargando } = useAuth();
-  if (cargando) return <RouteLoader />;
-  return estaAutenticado ? children : <Navigate to="/login" replace />;
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return <RouteLoader />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
 /** Ruta de administrador: solo rol 'admin' */
 function AdminRoute({ children }) {
-  const { esAdmin, estaAutenticado, cargando } = useAuth();
-  if (cargando) return <RouteLoader />;
-  if (!estaAutenticado) return <Navigate to="/login" replace />;
+  const { esAdmin, isAuthenticated, loading } = useAuth();
+  if (loading) return <RouteLoader />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   return esAdmin() ? children : <Navigate to="/app/mi-perfil" replace />;
 }
 
 /** Ruta de empleado: rol 'employee' (admin tambien puede verlas) */
 function EmployeeRoute({ children }) {
-  const { estaAutenticado, cargando } = useAuth();
-  if (cargando) return <RouteLoader />;
-  return estaAutenticado ? children : <Navigate to="/login" replace />;
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return <RouteLoader />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
 /** Ruta publica: si ya esta autenticado redirige segun rol */
 function PublicRoute({ children }) {
-  const { estaAutenticado, esAdmin, cargando } = useAuth();
-  if (cargando) return <RouteLoader />;
-  if (estaAutenticado) {
+  const { isAuthenticated, esAdmin, loading } = useAuth();
+  if (loading) return <RouteLoader />;
+  if (isAuthenticated) {
     return <Navigate to={esAdmin() ? '/app/dashboard' : '/app/mi-perfil'} replace />;
   }
   return children;

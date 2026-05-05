@@ -92,3 +92,42 @@
   background: var(--border2);
   flex-shrink: 0;
 }
+
+.topbar__menu {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .topbar {
+    left: 0;
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  .topbar__menu {
+    display: inline-flex;
+  }
+
+  .topbar__title {
+    font-size: 18px;
+  }
+
+  .topbar__subtitle,
+  .topbar__greeting,
+  .topbar__sep {
+    display: none;
+  }
+
+  .topbar__right {
+    margin-left: auto;
+    gap: 0;
+  }
+}
