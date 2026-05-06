@@ -10,8 +10,10 @@
 import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import Button from '../components/ui/Button';
-import Alert  from '../components/ui/Alert';
+import Button      from '../components/ui/Button';
+import Alert       from '../components/ui/Alert';
+import ThemeToggle from '../components/ui/ThemeToggle';
+import { toast }   from '../stores/useToastStore';
 import './Login.css';
 
 /* ── Iconos ── */
@@ -79,12 +81,28 @@ export default function Login() {
     setCargando(true);
     try {
       const usuario = await login(email.trim(), password);
+
+      /* Verificar que el rol real coincide con el tab seleccionado */
+      const rolEsperado = rolActivo === 'admin' ? 'admin' : 'employee';
+      if (usuario.role !== rolEsperado) {
+        const msg =
+          rolActivo === 'admin'
+            ? 'Esta cuenta es de empleado. Usa el acceso de Empleado.'
+            : 'Esta cuenta es de administrador. Usa el acceso de Administrador.';
+        toast.error('Acceso incorrecto', msg);
+        setError(msg);
+        return;
+      }
+
+      toast.success('¡Bienvenido!', `Hola, ${usuario.name || 'usuario'}.`);
       navigate(
         usuario.role === 'admin' ? '/app/dashboard' : '/app/mi-perfil',
         { replace: true }
       );
     } catch (err) {
-      setError(err.message || 'Error al iniciar sesión');
+      const msg = err.message || 'Error al iniciar sesión';
+      toast.error('Error al iniciar sesión', msg);
+      setError(msg);
     } finally {
       setCargando(false);
     }
@@ -97,6 +115,9 @@ export default function Login() {
       <Link to="/" className="login-back">
         <IcoBack /> Volver al inicio
       </Link>
+      <div className="login-theme">
+        <ThemeToggle />
+      </div>
 
       {/* ── Panel izquierdo: features del rol activo ── */}
       <div className={`login-brand login-brand--${config.color}`}>

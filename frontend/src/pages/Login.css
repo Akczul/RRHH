@@ -46,6 +46,14 @@
   transform: translateX(-2px);
 }
 
+/* ── Toggle de tema en la esquina superior derecha ── */
+.login-theme {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  z-index: 20;
+}
+
 /* ============================================================
    PANEL IZQUIERDO — Branding y features
    ============================================================ */

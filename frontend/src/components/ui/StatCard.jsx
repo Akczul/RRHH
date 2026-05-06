@@ -9,7 +9,7 @@
  */
 import './StatCard.css';
 
-export default function StatCard({ icono, valor, etiqueta, color = 'blue' }) {
+export default function StatCard({ icono, valor, etiqueta, color = 'blue', titulo }) {
   return (
     /* La clase de color controla el esquema de colores de la tarjeta */
     <div className={`stat-card stat-card--${color}`}>
@@ -22,7 +22,7 @@ export default function StatCard({ icono, valor, etiqueta, color = 'blue' }) {
         </div>
 
         {/* Valor numerico principal */}
-        <span className="stat-card__value">{valor}</span>
+        <span className="stat-card__value" title={titulo ?? (typeof valor === 'string' ? valor : undefined)}>{valor}</span>
       </div>
 
       {/* ── Etiqueta descriptiva del indicador ── */}

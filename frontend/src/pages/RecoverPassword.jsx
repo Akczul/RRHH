@@ -4,8 +4,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { recuperarContrasenaAPI } from '../services/api';
-import Button from '../components/ui/Button';
-import Alert from '../components/ui/Alert';
+import Button      from '../components/ui/Button';
+import Alert       from '../components/ui/Alert';
+import ThemeToggle from '../components/ui/ThemeToggle';
 import './RecoverPassword.css';
 
 /* ── Icono de sobre ── */
@@ -74,9 +75,12 @@ export default function RecoverPassword() {
 
       <div className="recover-form-panel">
         <div className="recover-form-wrap">
-          <Link to="/login" className="recover-back">
-            <IcoArrowLeft /> Volver al inicio de sesión
-          </Link>
+          <div className="recover-top-bar">
+            <Link to="/login" className="recover-back">
+              <IcoArrowLeft /> Volver al inicio de sesión
+            </Link>
+            <ThemeToggle />
+          </div>
 
           <div className="recover-icon">
             <IcoMail />

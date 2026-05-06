@@ -10,6 +10,7 @@
  */
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { toast } from '../../stores/useToastStore';
 import './Sidebar.css';
 
 /* ── Iconos SVG inline (sin dependencias externas) ── */
@@ -52,6 +53,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   /* Manejar el cierre de sesion con redireccion al login */
   const manejarLogout = async () => {
     await logout();
+    toast.info('Sesión cerrada', 'Hasta pronto.');
     onClose();
     navigate('/login', { replace: true });
   };

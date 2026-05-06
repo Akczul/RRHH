@@ -6,6 +6,7 @@ import Badge  from '../components/ui/Badge';
 import Alert  from '../components/ui/Alert';
 import Modal  from '../components/ui/Modal';
 import Button from '../components/ui/Button';
+import { toast } from '../stores/useToastStore';
 import './MyProfile.css';
 
 /* ── Icono de usuario ── */
@@ -129,6 +130,7 @@ export default function MyProfile() {
       await cargarPerfil();
       setModalAbierto(false);
       setExito('Perfil actualizado correctamente.');
+      toast.success('Perfil actualizado', 'Los cambios han sido guardados correctamente.');
     } catch (e) {
       setErrorModal(e.message || 'Error al actualizar el perfil');
     } finally {

@@ -5,6 +5,7 @@ import Modal   from '../components/ui/Modal';
 import Button  from '../components/ui/Button';
 import Badge   from '../components/ui/Badge';
 import Alert   from '../components/ui/Alert';
+import { toast } from '../stores/useToastStore';
 import './Employees.css';
 
 /* ── Icono de lapiz ── */
@@ -202,8 +203,10 @@ export default function Employees() {
         categoryId: departamentoId || undefined
       });
       setModalCrear(false);
+      toast.success('Posición creada', `"${nombre}" fue creada correctamente.`);
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al crear');
+      toast.error('Error al crear', e.message ?? 'No se pudo crear la posición.');
     } finally {
       setGuardando(false);
     }
@@ -221,8 +224,10 @@ export default function Employees() {
         categoryId: departamentoId || undefined
       });
       setEditando(null);
+      toast.success('Posición actualizada', `"${nombre}" fue actualizada correctamente.`);
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al actualizar');
+      toast.error('Error al actualizar', e.message ?? 'No se pudo actualizar la posición.');
     } finally {
       setGuardando(false);
     }
@@ -233,10 +238,13 @@ export default function Employees() {
     setGuardando(true);
     setErrorAccion(null);
     try {
+      const nombre = eliminando.name;
       await deletePosition(eliminando._id);
       setEliminando(null);
+      toast.success('Posición eliminada', `"${nombre}" fue eliminada.`);
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al eliminar');
+      toast.error('Error al eliminar', e.message ?? 'No se pudo eliminar la posición.');
     } finally {
       setGuardando(false);
     }

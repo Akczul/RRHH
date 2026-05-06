@@ -4,6 +4,7 @@ import Modal   from '../components/ui/Modal';
 import Button  from '../components/ui/Button';
 import Badge   from '../components/ui/Badge';
 import Alert   from '../components/ui/Alert';
+import { toast } from '../stores/useToastStore';
 import './Departments.css';
 
 /* ── Icono de lapiz (editar) ── */
@@ -134,8 +135,10 @@ export default function Departments() {
     try {
       await createDepartment({ name: nombre, description: descripcion });
       setModalCrear(false);
+      toast.success('Departamento creado', `"${nombre}" fue creado correctamente.`);
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al crear');
+      toast.error('Error al crear', e.message ?? 'No se pudo crear el departamento.');
     } finally {
       setGuardando(false);
     }
@@ -148,8 +151,10 @@ export default function Departments() {
     try {
       await updateDepartment(editando._id, { name: nombre, description: descripcion });
       setEditando(null);
+      toast.success('Departamento actualizado', `"${nombre}" fue actualizado correctamente.`);
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al actualizar');
+      toast.error('Error al actualizar', e.message ?? 'No se pudo actualizar el departamento.');
     } finally {
       setGuardando(false);
     }
@@ -160,10 +165,13 @@ export default function Departments() {
     setGuardando(true);
     setErrorAccion(null);
     try {
+      const nombre = eliminando.name;
       await deleteDepartment(eliminando._id);
       setEliminando(null);
+      toast.success('Departamento eliminado', `"${nombre}" fue eliminado.`);
     } catch (e) {
       setErrorAccion(e.message ?? 'Error al eliminar');
+      toast.error('Error al eliminar', e.message ?? 'No se pudo eliminar el departamento.');
     } finally {
       setGuardando(false);
     }
