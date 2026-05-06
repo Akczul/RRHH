@@ -100,7 +100,7 @@ function FormPosicion({ inicial, departamentos, guardando, error, onGuardar, onC
             <option key={d._id} value={d._id}>{d.name}</option>
           ))}
         </select>
-        {!form.departamentoId && <span className="field__hint">Requerido para crear la posicion</span>}
+        {!form.departamentoId && <span className="field__hint">Requerido para crear la posición</span>}
       </div>
 
       {/* Grid de dos columnas: salario e informacion adicional */}
@@ -117,14 +117,14 @@ function FormPosicion({ inicial, departamentos, guardando, error, onGuardar, onC
       <div className="field">
         <label className="field__label" htmlFor="pf-desc">Descripcion del cargo</label>
         <textarea id="pf-desc" name="descripcion" className="field__input field__textarea"
-          placeholder="Describe las responsabilidades de esta posicion..." rows={3}
+          placeholder="Describe las responsabilidades de esta posición..." rows={3}
           value={form.descripcion} onChange={cambiar} />
       </div>
 
       {/* Boton guardar */}
       <div className="pos-form__footer">
         <Button type="submit" variante="primary" cargando={guardando} fullWidth>
-          {inicial?._id ? 'Guardar cambios' : 'Crear posicion'}
+          {inicial?._id ? 'Guardar cambios' : 'Crear posición'}
         </Button>
       </div>
     </form>
@@ -176,7 +176,9 @@ export default function Employees() {
     }
   }, [fetchPositions]);
 
-  useEffect(() => { cargar(); }, [cargar]);
+  useEffect(() => {
+    void Promise.resolve().then(cargar);
+  }, [cargar]);
 
   /* ── Filtro de busqueda local ── */
   const filtradas = posiciones.filter(p => {
@@ -260,12 +262,12 @@ export default function Employees() {
       {/* ── Encabezado ── */}
       <div className="page-header">
         <div className="page-header__left">
-          <h1 className="page-header__title">Posiciones</h1>
-          <p className="page-header__desc">Cargos y posiciones disponibles en la organizacion</p>
+          <h1 className="page-header__title">Catálogo de cargos</h1>
+          <p className="page-header__desc">Responsabilidades, salarios y áreas vinculadas</p>
         </div>
         <Button variante="primary" icono={<IcoPlus />}
           onClick={() => { setErrorAccion(null); setModalCrear(true); }}>
-          Nueva posicion
+          Nueva posición
         </Button>
       </div>
 
@@ -278,7 +280,7 @@ export default function Employees() {
         </div>
         {!cargando && (
           <span className="dept-count">
-            {filtradas.length} {filtradas.length === 1 ? 'posicion' : 'posiciones'}
+            {filtradas.length} {filtradas.length === 1 ? 'posición' : 'posiciones'}
           </span>
         )}
       </div>
@@ -307,14 +309,14 @@ export default function Employees() {
         <div className="card">
           {filtradas.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state__icon">💼</div>
+              <div className="empty-state__icon" aria-hidden="true">--</div>
               <p className="empty-state__title">
                 {busqueda ? 'Sin resultados' : 'No hay posiciones'}
               </p>
               <p className="empty-state__desc">
                 {busqueda
                   ? `No se encontro "${busqueda}"`
-                  : 'Crea la primera posicion para comenzar.'}
+                  : 'Crea la primera posición para comenzar.'}
               </p>
             </div>
           ) : (
@@ -385,7 +387,7 @@ export default function Employees() {
 
       {/* ══ Modal: Crear posicion ══ */}
       {modalCrear && (
-        <Modal titulo="Nueva posicion" onClose={() => setModalCrear(false)}>
+        <Modal titulo="Nueva posición" onClose={() => setModalCrear(false)}>
           <FormPosicion
             departamentos={departamentos}
             guardando={guardando}
@@ -398,7 +400,7 @@ export default function Employees() {
 
       {/* ══ Modal: Editar posicion ══ */}
       {editando && (
-        <Modal titulo="Editar posicion" onClose={() => setEditando(null)}>
+        <Modal titulo="Editar posición" onClose={() => setEditando(null)}>
           <FormPosicion
             inicial={inicialEdicion(editando)}
             departamentos={departamentos}
@@ -413,7 +415,7 @@ export default function Employees() {
       {/* ══ Modal: Confirmar eliminacion ══ */}
       {eliminando && (
         <Modal
-          titulo="Eliminar posicion"
+          titulo="Eliminar posición"
           onClose={() => setEliminando(null)}
           footer={
             <>

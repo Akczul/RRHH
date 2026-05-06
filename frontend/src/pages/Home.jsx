@@ -1,263 +1,254 @@
-/**
- * Home.jsx — Landing page pública de CorpHR.
- *
- * Presenta la plataforma con:
- *  - Hero principal con CTA (Administrador / Empleado)
- *  - Métricas destacadas
- *  - Sección de módulos / características
- *  - Sección "Para quién es"
- *  - Footer
- */
 import { Link } from 'react-router-dom';
 import './Home.css';
 
-/* ── Iconos SVG ── */
-const IcoUsers     = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
-const IcoBuilding  = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/><path d="M9 9h1m-1 4h1m4-4h1m-1 4h1"/></svg>;
-const IcoClock     = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
-const IcoChart     = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
-const IcoShield    = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
-const IcoBriefcase = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>;
-const IcoArrow     = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
-const IcoCheck     = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
+const IcoUsers = () => <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+const IcoBuilding = () => <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/><path d="M9 9h1m-1 4h1m4-4h1m-1 4h1"/></svg>;
+const IcoClock = () => <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+const IcoChart = () => <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
+const IcoShield = () => <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
+const IcoBriefcase = () => <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>;
+const IcoArrow = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
+const IcoCheck = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
 
-/* ── Datos estáticos ── */
 const ADMIN_FEATURES = [
-  'Panel de control con métricas en tiempo real',
-  'Crear y gestionar empleados y cargos',
-  'Administrar la estructura de departamentos',
-  'Registrar y consultar asistencia del personal',
-  'Generar reportes organizacionales',
-  'Crear cuentas de acceso para empleados',
+  'Panel de control con métricas del equipo',
+  'Gestión de empleados, cargos y departamentos',
+  'Consulta diaria de asistencia del personal',
+  'Reportes mensuales y distribución por áreas',
+  'Cuentas de acceso con roles diferenciados',
 ];
 
 const EMP_FEATURES = [
-  'Consultar su perfil y datos personales',
-  'Ver su historial de asistencia',
-  'Actualizar su información de contacto',
-  'Acceso seguro con credenciales propias',
+  'Consulta del perfil personal',
+  'Registro de entrada y salida',
+  'Historial de asistencia propio',
+  'Sesión segura con credenciales individuales',
 ];
 
 const MODULOS = [
   {
     icono: <IcoUsers />,
     color: 'accent',
-    titulo: 'Gestión de Empleados',
-    desc: 'Administra los cargos y posiciones de tu organización. Asigna roles, salarios y departamentos desde un solo lugar.',
+    titulo: 'Empleados',
+    desc: 'Consulta y organiza la información del personal con datos laborales, contacto, área y cargo asociado.',
   },
   {
     icono: <IcoBuilding />,
-    color: 'purple',
+    color: 'info',
     titulo: 'Departamentos',
-    desc: 'Organiza la estructura interna de tu empresa creando y gestionando departamentos con sus respectivas descripciones.',
+    desc: 'Estructura las áreas de la organización y mantén una lectura clara de la distribución interna.',
+  },
+  {
+    icono: <IcoBriefcase />,
+    color: 'purple',
+    titulo: 'Cargos',
+    desc: 'Administra posiciones, salarios, responsabilidades y relación directa con cada departamento.',
   },
   {
     icono: <IcoClock />,
     color: 'success',
-    titulo: 'Control de Asistencia',
-    desc: 'Registra entradas, salidas y ausencias del personal. Próximamente disponible con reportes detallados.',
+    titulo: 'Asistencia',
+    desc: 'Controla entradas, salidas, ausencias y llegadas tarde desde vistas para administración y empleados.',
   },
   {
     icono: <IcoChart />,
     color: 'warning',
-    titulo: 'Reportes y Analítica',
-    desc: 'Visualiza métricas clave: distribución salarial, rotación de personal y estadísticas por departamento.',
+    titulo: 'Reportes',
+    desc: 'Revisa indicadores mensuales, cumplimiento de asistencia y headcount por departamento.',
   },
   {
     icono: <IcoShield />,
     color: 'danger',
-    titulo: 'Control de Acceso por Rol',
-    desc: 'Dos niveles de acceso: Administrador con control total y Empleado con vista de su perfil y asistencia.',
-  },
-  {
-    icono: <IcoBriefcase />,
-    color: 'info',
-    titulo: 'Gestión de Posiciones',
-    desc: 'Define los cargos disponibles en la empresa, su descripción, salario mensual y departamento asociado.',
+    titulo: 'Accesos por rol',
+    desc: 'Separa la experiencia de administración y autoservicio con permisos definidos desde el backend.',
   },
 ];
+
+/* Anillo de progreso SVG para la tarjeta de asistencia */
+function RingChart({ pct = 92 }) {
+  const r = 36, circ = 2 * Math.PI * r;
+  const dash = (pct / 100) * circ;
+  return (
+    <svg width="96" height="96" viewBox="0 0 96 96" fill="none" className="hero-ring">
+      <circle cx="48" cy="48" r={r} stroke="rgba(99,102,241,0.14)" strokeWidth="8" />
+      <circle cx="48" cy="48" r={r} stroke="url(#rg)" strokeWidth="8"
+        strokeDasharray={`${dash} ${circ - dash}`} strokeDashoffset={circ * 0.25}
+        strokeLinecap="round" />
+      <defs>
+        <linearGradient id="rg" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#6366F1" />
+          <stop offset="100%" stopColor="#A855F7" />
+        </linearGradient>
+      </defs>
+      <text x="48" y="52" textAnchor="middle" fill="#fff" fontSize="18" fontWeight="800" fontFamily="Sora,sans-serif">{pct}%</text>
+    </svg>
+  );
+}
+
+function HeroVisual() {
+  const avatars = ['CM', 'MR', 'VG', 'NH'];
+  const bars = [
+    { label: 'Operaciones', pct: 78, col: '#6366F1' },
+    { label: 'Tecnología', pct: 92, col: '#A855F7' },
+    { label: 'Finanzas', pct: 55, col: '#06B6D4' },
+  ];
+
+  return (
+    <div className="hero-visual" aria-hidden="true">
+      {/* Orbes de fondo */}
+      <div className="hero-visual__orb hero-visual__orb--a" />
+      <div className="hero-visual__orb hero-visual__orb--b" />
+
+      {/* Tarjeta 1 — Asistencia (anillo) */}
+      <div className="hero-visual__card hero-visual__card--ring">
+        <div className="hero-visual__card-header">
+          <span className="hero-visual__card-label">Asistencia hoy</span>
+          <span className="hero-visual__dot hero-visual__dot--green" />
+        </div>
+        <div className="hero-visual__ring-wrap">
+          <RingChart pct={92} />
+        </div>
+        <p className="hero-visual__card-sub">23 de 25 empleados presentes</p>
+      </div>
+
+      {/* Tarjeta 2 — Equipo */}
+      <div className="hero-visual__card hero-visual__card--team">
+        <div className="hero-visual__card-header">
+          <span className="hero-visual__card-label">Equipo activo</span>
+        </div>
+        <div className="hero-visual__val">24</div>
+        <div className="hero-visual__avatars">
+          {avatars.map((a, i) => (
+            <span key={a} className="hero-visual__av" style={{ zIndex: 4 - i }}>{a}</span>
+          ))}
+          <span className="hero-visual__av hero-visual__av--more">+8</span>
+        </div>
+      </div>
+
+      {/* Tarjeta 3 — Departamentos */}
+      <div className="hero-visual__card hero-visual__card--depts">
+        <div className="hero-visual__card-header">
+          <span className="hero-visual__card-label">Departamentos</span>
+          <span className="hero-visual__badge">5 áreas</span>
+        </div>
+        <div className="hero-visual__bars">
+          {bars.map(({ label, pct, col }) => (
+            <div key={label} className="hero-visual__bar-row">
+              <span className="hero-visual__bar-name">{label}</span>
+              <div className="hero-visual__bar-track">
+                <div className="hero-visual__bar-fill" style={{ width: `${pct}%`, background: col }} />
+              </div>
+              <span className="hero-visual__bar-pct">{pct}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tarjeta 4 — Estado del sistema (pequeña) */}
+      <div className="hero-visual__card hero-visual__card--status">
+        <span className="hero-visual__dot hero-visual__dot--green" />
+        <span className="hero-visual__status-text">Sistema operativo</span>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
     <div className="home">
-
-      {/* ══════════════════════════════════
-          NAVBAR
-      ══════════════════════════════════ */}
       <nav className="home-nav">
-        <div className="home-nav__brand">
+        <Link to="/" className="home-nav__brand" aria-label="CorpHR inicio">
           <div className="home-nav__logo">CH</div>
           <span className="home-nav__name">CorpHR</span>
-        </div>
-        <div className="home-nav__actions">
-          <Link to="/login" className="home-nav__link">Iniciar sesión</Link>
-        </div>
+        </Link>
+        <Link to="/login" className="home-nav__link">Iniciar sesión</Link>
       </nav>
 
-      {/* ══════════════════════════════════
-          HERO
-      ══════════════════════════════════ */}
       <section className="home-hero">
-        {/* Fondo decorativo */}
-        <div className="home-hero__bg" aria-hidden="true">
-          <div className="home-hero__orb home-hero__orb--1" />
-          <div className="home-hero__orb home-hero__orb--2" />
-          <div className="home-hero__grid" />
-        </div>
-
+        <HeroVisual />
         <div className="home-hero__content">
-
-          <h1 className="home-hero__title">
-            Gestiona tu equipo con
-            <span className="home-hero__title-accent"> inteligencia</span>
-          </h1>
-
+          <p className="home-hero__eyebrow">Sistema de gestión de recursos humanos</p>
+          <h1 className="home-hero__title">CorpHR</h1>
           <p className="home-hero__sub">
-            CorpHR centraliza la administración de tu capital humano: empleados, departamentos,
-            asistencia y reportes en una plataforma moderna, segura y fácil de usar.
+            Gestiona empleados, cargos y departamentos con control de asistencia en tiempo real, reportes mensuales y acceso diferenciado por roles. Toda la operación de RRHH sin complejidad.
           </p>
 
-          {/* CTAs por rol */}
           <div className="home-hero__ctas">
-            <Link to="/login?rol=admin" className="home-cta home-cta--admin">
-              <div className="home-cta__icon">
-                <IcoShield />
-              </div>
-              <div className="home-cta__body">
-                <span className="home-cta__label">Acceso Administrador</span>
-                <span className="home-cta__desc">Panel de control completo</span>
-              </div>
+            <Link to="/login?rol=admin" className="home-cta home-cta--primary">
+              <span>Acceso administrador</span>
               <IcoArrow />
             </Link>
-
-            <Link to="/login?rol=empleado" className="home-cta home-cta--emp">
-              <div className="home-cta__icon">
-                <IcoUsers />
-              </div>
-              <div className="home-cta__body">
-                <span className="home-cta__label">Acceso Empleado</span>
-                <span className="home-cta__desc">Mi perfil y asistencia</span>
-              </div>
+            <Link to="/login?rol=empleado" className="home-cta home-cta--secondary">
+              <span>Acceso empleado</span>
               <IcoArrow />
             </Link>
-          </div>
-        </div>
-
-        {/* Panel visual derecho */}
-        <div className="home-hero__visual">
-          <div className="home-hero__mockup">
-            <div className="home-mock__bar">
-              <span /><span /><span />
-            </div>
-            <div className="home-mock__sidebar">
-              {['Dashboard','Posiciones','Departamentos','Asistencia','Reportes','Configuración'].map(item => (
-                <div key={item} className={`home-mock__item ${item === 'Dashboard' ? 'home-mock__item--active' : ''}`}>
-                  <div className="home-mock__item-dot" />
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="home-mock__content">
-              <div className="home-mock__stat-row">
-                {['Empleados','Departamentos','Posiciones'].map(s => (
-                  <div key={s} className="home-mock__stat">
-                    <div className="home-mock__stat-val skeleton-anim" />
-                    <div className="home-mock__stat-lbl">{s}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="home-mock__table-head" />
-              {[1,2,3].map(i => (
-                <div key={i} className="home-mock__table-row">
-                  <div className="home-mock__table-cell home-mock__table-cell--w40" />
-                  <div className="home-mock__table-cell home-mock__table-cell--w25" />
-                  <div className="home-mock__table-cell home-mock__table-cell--w20" />
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════
-          MÓDULOS
-      ══════════════════════════════════ */}
       <section className="home-section">
         <div className="home-section__head">
-          <h2 className="home-section__title">Todo lo que necesitas en un solo lugar</h2>
-          <p className="home-section__sub">Módulos diseñados para cubrir cada aspecto de la gestión del talento humano.</p>
+          <p className="home-section__eyebrow">Módulos activos</p>
+          <h2 className="home-section__title">Todo el flujo de RRHH en una interfaz consistente</h2>
+          <p className="home-section__sub">Cada módulo está conectado al backend y preparado para revisar la experiencia completa desde el frontend.</p>
         </div>
         <div className="home-modules">
           {MODULOS.map(({ icono, color, titulo, desc }) => (
-            <div key={titulo} className={`home-module home-module--${color}`}>
+            <article key={titulo} className={`home-module home-module--${color}`}>
               <div className="home-module__icon">{icono}</div>
               <h3 className="home-module__title">{titulo}</h3>
               <p className="home-module__desc">{desc}</p>
-            </div>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* ══════════════════════════════════
-          PARA QUIÉN ES
-      ══════════════════════════════════ */}
-      <section className="home-section home-section--alt">
+      <section className="home-section home-section--roles">
         <div className="home-section__head">
-          <h2 className="home-section__title">Dos niveles de acceso, una sola plataforma</h2>
-          <p className="home-section__sub">Accesos diferenciados según el rol, con permisos configurados desde el inicio.</p>
+          <p className="home-section__eyebrow">Acceso por perfil</p>
+          <h2 className="home-section__title">Administrador y empleado trabajan desde el mismo sistema</h2>
+          <p className="home-section__sub">La navegación se adapta al rol para mantener simple lo que cada usuario necesita hacer.</p>
         </div>
         <div className="home-roles">
-          <div className="home-role home-role--admin">
+          <article className="home-role">
             <div className="home-role__header">
               <div className="home-role__icon"><IcoShield /></div>
               <div>
                 <h3 className="home-role__title">Administrador</h3>
-                <p className="home-role__sub">Control total del sistema</p>
+                <p className="home-role__sub">Control operativo del sistema</p>
               </div>
             </div>
             <ul className="home-role__list">
-              {ADMIN_FEATURES.map(f => (
-                <li key={f} className="home-role__item">
-                  <span className="home-role__check"><IcoCheck /></span>
-                  {f}
-                </li>
+              {ADMIN_FEATURES.map(feature => (
+                <li key={feature}><span><IcoCheck /></span>{feature}</li>
               ))}
             </ul>
-          </div>
+          </article>
 
-          <div className="home-role home-role--emp">
+          <article className="home-role">
             <div className="home-role__header">
               <div className="home-role__icon"><IcoUsers /></div>
               <div>
                 <h3 className="home-role__title">Empleado</h3>
-                <p className="home-role__sub">Tu espacio personal de RRHH</p>
+                <p className="home-role__sub">Autoservicio personal</p>
               </div>
             </div>
             <ul className="home-role__list">
-              {EMP_FEATURES.map(f => (
-                <li key={f} className="home-role__item">
-                  <span className="home-role__check"><IcoCheck /></span>
-                  {f}
-                </li>
+              {EMP_FEATURES.map(feature => (
+                <li key={feature}><span><IcoCheck /></span>{feature}</li>
               ))}
             </ul>
-          </div>
+          </article>
         </div>
       </section>
 
-      {/* ══════════════════════════════════
-          FOOTER
-      ══════════════════════════════════ */}
       <footer className="home-footer">
         <div className="home-footer__brand">
-          <div className="home-nav__logo home-footer__logo">CH</div>
-          <span className="home-footer__name">CorpHR</span>
+          <div className="home-nav__logo">CH</div>
+          <span>CorpHR</span>
         </div>
-        <p className="home-footer__copy">
-          © {new Date().getFullYear()} CorpHR — Sistema de Gestión de Recursos Humanos.
-        </p>
+        <p>© {new Date().getFullYear()} CorpHR - Sistema de Gestión de Recursos Humanos.</p>
       </footer>
-
     </div>
   );
 }

@@ -12,11 +12,13 @@ import './Topbar.css';
 /* ── Mapa ruta → { titulo, subtitulo } ── */
 const TITULOS = {
   '/app/dashboard':     { titulo: 'Dashboard',      subtitulo: 'Resumen general del sistema' },
-  '/app/posiciones':    { titulo: 'Posiciones',      subtitulo: 'Gestion de cargos y roles organizacionales' },
+  '/app/posiciones':    { titulo: 'Posiciones',      subtitulo: 'Gestión de cargos y roles organizacionales' },
   '/app/departamentos': { titulo: 'Departamentos',   subtitulo: 'Estructura organizativa de la empresa' },
   '/app/asistencia':    { titulo: 'Asistencia',      subtitulo: 'Control y seguimiento de asistencia' },
   '/app/reportes':      { titulo: 'Reportes',        subtitulo: 'Informes y estadisticas del sistema' },
-  '/app/mi-perfil':     { titulo: 'Mi Perfil',       subtitulo: 'Informacion personal y de cuenta' },
+  '/app/generar-reportes': { titulo: 'Generar Reportes', subtitulo: 'Exportar datos en PDF y Excel' },
+  '/app/registro':      { titulo: 'Registrar usuario', subtitulo: 'Alta de cuentas y permisos de acceso' },
+  '/app/mi-perfil':     { titulo: 'Mi Perfil',       subtitulo: 'Información personal y de cuenta' },
   '/app/mi-asistencia': { titulo: 'Mi Asistencia',   subtitulo: 'Historial personal de asistencia' },
 };
 

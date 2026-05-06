@@ -1,38 +1,92 @@
-﻿/* ============================================================
-   Reports.jsx — Modulo de Reportes (Administrador)
-   Sin soporte en el backend actualmente.
-   ============================================================ */
-import './Placeholder.css';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { obtenerReporteAsistenciaMensualAPI, obtenerReporteHeadcountAPI } from '../services/api';
+import Alert from '../components/ui/Alert';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import './Reports.css';
+
+const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const IcoRefresh = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg>;
+
+function ReportMetric({ label, value, hint, tone }) {
+  return <div className={`report-metric report-metric--${tone}`}><span className="report-metric__label">{label}</span><strong className="report-metric__value">{value}</strong><span className="report-metric__hint">{hint}</span></div>;
+}
 
 export default function Reports() {
-  return (
-    <div className="placeholder-page">
+  const actual = new Date();
+  const [month, setMonth] = useState(actual.getMonth() + 1);
+  const [year, setYear] = useState(actual.getFullYear());
+  const [monthly, setMonthly] = useState([]);
+  const [headcount, setHeadcount] = useState([]);
+  const [totalEmployees, setTotalEmployees] = useState(0);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
 
-      {/* Encabezado */}
-      <div className="page-header">
+  const cargar = useCallback(async () => {
+    setCargando(true);
+    setError('');
+    try {
+      const [monthlyResp, headcountResp] = await Promise.all([
+        obtenerReporteAsistenciaMensualAPI({ month, year }),
+        obtenerReporteHeadcountAPI(),
+      ]);
+      setMonthly(monthlyResp.data ?? []);
+      setHeadcount(headcountResp.departments ?? []);
+      setTotalEmployees(headcountResp.totalEmployees ?? monthlyResp.totalEmployees ?? 0);
+    } catch (err) {
+      setError(err.message || 'No fue posible cargar los reportes.');
+    } finally {
+      setCargando(false);
+    }
+  }, [month, year]);
+
+  useEffect(() => { void Promise.resolve().then(cargar); }, [cargar]);
+
+  const totales = useMemo(() => monthly.reduce((acc, item) => ({
+    present: acc.present + item.present,
+    late: acc.late + item.late,
+    absent: acc.absent + item.absent,
+    totalDays: acc.totalDays + item.totalDays,
+  }), { present: 0, late: 0, absent: 0, totalDays: 0 }), [monthly]);
+
+  const cumplimiento = totales.totalDays ? Math.round(((totales.present + totales.late) / totales.totalDays) * 100) : 0;
+  const maxHeadcount = Math.max(...headcount.map((item) => item.headcount), 1);
+
+  return (
+    <div className="reports-page">
+      <div className="page-header page-header--panel">
         <div className="page-header__left">
-          <h1 className="page-header__title">Reportes</h1>
-          <p className="page-header__desc">Analisis y estadisticas de la organizacion</p>
+          <h1 className="page-header__title">Indicadores del periodo</h1>
+          <p className="page-header__desc">Seguimiento de personas y asistencia.</p>
+        </div>
+        <div className="reports-controls">
+          <select className="field__input field__select" value={month} onChange={(e) => setMonth(Number(e.target.value))}>{MESES.map((mes, index) => <option key={mes} value={index + 1}>{mes}</option>)}</select>
+          <input className="field__input reports-controls__year" type="number" min="2020" value={year} onChange={(e) => setYear(Number(e.target.value))} />
+          <Button variante="secondary" icono={<IcoRefresh />} onClick={cargar} cargando={cargando}>Actualizar</Button>
         </div>
       </div>
 
-      {/* Vista en desarrollo */}
-      <div className="placeholder-card">
-        <div className="placeholder-card__icon">📊</div>
-        <h2 className="placeholder-card__title">Modulo en desarrollo</h2>
-        <p className="placeholder-card__desc">
-          El modulo de reportes y analisis esta siendo construido.
-          Podras visualizar metricas clave de recursos humanos con graficas interactivas.
-        </p>
-        <span className="placeholder-card__badge">Proximamente</span>
+      {error && <Alert tipo="error" onCerrar={() => setError('')}>{error}</Alert>}
 
-        {/* Funcionalidades planeadas */}
-        <div className="placeholder-features">
-          <span className="placeholder-feature">Rotacion de personal</span>
-          <span className="placeholder-feature">Distribucion por departamento</span>
-          <span className="placeholder-feature">Analisis salarial</span>
-          <span className="placeholder-feature">Exportar a PDF / Excel</span>
-        </div>
+      <section className="reports-metrics">
+        <ReportMetric label="Headcount" value={totalEmployees} hint="empleados activos" tone="blue" />
+        <ReportMetric label="Asistencias" value={totales.present} hint="registros puntuales" tone="green" />
+        <ReportMetric label="Tardanzas" value={totales.late} hint="llegadas tarde" tone="orange" />
+        <ReportMetric label="Cumplimiento" value={`${cumplimiento}%`} hint={`${MESES[month - 1]} ${year}`} tone="purple" />
+      </section>
+
+      <div className="reports-layout">
+        <section className="card">
+          <div className="card__header"><div className="card__header-left"><h3 className="card__title">Asistencia mensual</h3><span className="card__count">{monthly.length} empleados incluidos</span></div><Badge texto={`${MESES[month - 1]} ${year}`} tipo="blue" /></div>
+          {cargando ? <div className="dept-skeleton">{[1, 2, 3, 4].map((item) => <div key={item} className="dept-skeleton__row"><div className="skeleton" style={{ width: '70%', height: 14 }} /></div>)}</div> : (
+            <div className="table-wrap"><table className="table"><thead><tr><th>Empleado</th><th>Area</th><th>Presente</th><th>Tarde</th><th>Ausente</th></tr></thead><tbody>{monthly.map((item) => <tr key={item.employeeId}><td><span className="table__primary">{item.name}</span><span className="table__secondary">{item.email}</span></td><td><span className="table__primary">{item.department}</span><span className="table__secondary">{item.position}</span></td><td><Badge texto={String(item.present)} tipo="green" /></td><td><Badge texto={String(item.late)} tipo="orange" /></td><td><Badge texto={String(item.absent)} tipo="red" /></td></tr>)}</tbody></table></div>
+          )}
+        </section>
+
+        <section className="card">
+          <div className="card__header"><div className="card__header-left"><h3 className="card__title">Distribución por departamento</h3><span className="card__count">{headcount.length} áreas con personal activo</span></div></div>
+          <div className="headcount-list">{headcount.map((item) => <div key={item.departmentId} className="headcount-item"><div className="headcount-item__row"><span className="headcount-item__name">{item.departmentName}</span><strong>{item.headcount}</strong></div><div className="headcount-item__track"><span style={{ width: `${(item.headcount / maxHeadcount) * 100}%` }} /></div></div>)}</div>
+        </section>
       </div>
     </div>
   );

@@ -24,7 +24,7 @@
 .modal {
   background: var(--surface);
   border: 1px solid var(--border2);
-  border-radius: var(--radio-lg);
+  border-radius: var(--radio);
   width: 100%;
   max-height: 90vh;
   display: flex;
@@ -47,11 +47,11 @@
 
 /* Titulo del modal */
 .modal__title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-size: 16px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 /* Boton de cierre X */

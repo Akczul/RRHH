@@ -1,10 +1,8 @@
-﻿/* ============================================================
-   Layout.css — Shell de la aplicacion autenticada
+/* ============================================================
+   Layout.css — Shell autenticado (rediseño v2)
    ============================================================ */
 
-/* ── Contenedor raiz del layout ── */
 .layout {
-  /* Display flex para colocar sidebar a la izquierda y main a la derecha */
   display: flex;
   min-height: 100vh;
   background: var(--bg);
@@ -13,12 +11,13 @@
 .layout__backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(5, 10, 20, 0.55);
+  background: rgba(2, 6, 23, 0.65);
+  backdrop-filter: blur(4px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 110;
+  transition: opacity var(--dur-base) var(--ease-out);
+  z-index: 99;
 }
 
 .layout__backdrop--visible {
@@ -27,38 +26,27 @@
   pointer-events: auto;
 }
 
-/* ── Columna principal (todo excepto el sidebar) ── */
 .layout__main {
-  /* Desplazar a la derecha del sidebar */
   margin-left: var(--sidebar-width);
-  /* Ocupar todo el ancho restante */
   flex: 1;
-  /* Columna vertical: topbar arriba + contenido abajo */
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-/* ── Area de contenido de la pagina ── */
 .layout__content {
-  /* Espacio superior para no quedar debajo de la topbar fija */
-  padding-top: var(--topbar-h);
-  /* Padding generoso del contenido */
-  padding: var(--topbar-h) 28px 32px;
-  /* Crecer para llenar el espacio disponible */
+  padding: calc(var(--topbar-h) + 24px) 32px 36px;
   flex: 1;
-  /* Permitir scroll vertical del contenido */
   overflow-y: auto;
-  /* Altura minima para scroll correcto */
   min-height: calc(100vh - var(--topbar-h));
+  background:
+    radial-gradient(ellipse at 0% 0%, color-mix(in srgb, var(--accent) 6%, transparent) 0%, transparent 35%),
+    radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--secondary) 5%, transparent) 0%, transparent 35%),
+    var(--bg);
+  animation: fadeIn var(--dur-base) var(--ease-out) both;
 }
 
 @media (max-width: 1024px) {
-  .layout__main {
-    margin-left: 0;
-  }
-
-  .layout__content {
-    padding: var(--topbar-h) 16px 20px;
-  }
+  .layout__main { margin-left: 0; }
+  .layout__content { padding: calc(var(--topbar-h) + 16px) 16px 24px; }
 }

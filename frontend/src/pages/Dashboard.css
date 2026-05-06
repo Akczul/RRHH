@@ -4,17 +4,19 @@
    ============================================================ */
 
 /* ── Contenedor del dashboard ── */
-.dash { display: flex; flex-direction: column; gap: 24px; }
+.dash { display: flex; flex-direction: column; gap: 20px; }
 
 /* ── Banner de bienvenida ── */
 .dash__welcome {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, var(--surface) 0%, color-mix(in srgb, var(--accent) 8%, var(--surface)) 100%);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 45%),
+    var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radio-lg);
-  padding: 24px 28px;
+  border-radius: var(--radio);
+  padding: 22px 24px;
   gap: 16px;
 }
 
@@ -28,11 +30,11 @@
 }
 
 .dash__welcome-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 22px;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 750;
   color: var(--text);
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 1.2;
   margin-bottom: 4px;
 }
@@ -74,7 +76,7 @@
 /* ── Grid de tarjetas de estadisticas ── */
 .dash__stats {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 16px;
 }
 
@@ -141,7 +143,7 @@
 
 .dash__dept-bar-fill {
   height: 100%;
-  background: var(--grad-accent);
+  background: var(--accent);
   border-radius: 999px;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 4px;
@@ -155,8 +157,9 @@
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radio-lg);
+  border-radius: var(--radio);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 /* Encabezado de la tarjeta */
@@ -166,15 +169,16 @@
   justify-content: space-between;
   padding: 18px 20px 14px;
   border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface2) 48%, transparent);
 }
 
 /* Titulo dentro del header de la tarjeta */
 .card__title {
-  font-family: 'Syne', sans-serif;
-  font-size: 14.5px;
+  font-family: var(--font-display);
+  font-size: 14px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 /* Enlace de accion (Ver todos, Gestionar...) */
@@ -193,13 +197,13 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 /* Celdas del encabezado */
 .table th {
   text-align: left;
-  padding: 10px 16px;
+  padding: 11px 16px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -211,7 +215,7 @@
 
 /* Celdas de datos */
 .table td {
-  padding: 12px 16px;
+  padding: 13px 16px;
   border-bottom: 1px solid var(--border);
   color: var(--text2);
   vertical-align: middle;
@@ -226,7 +230,11 @@
   display: block;
   font-weight: 600;
   color: var(--text);
-  font-size: 13.5px;
+  font-size: 13.25px;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Texto secundario en una celda (descripcion) */
@@ -274,12 +282,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   gap: 16px;
 }
 .page-header__left  { display: flex; flex-direction: column; gap: 3px; }
-.page-header__title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--text); }
+.page-header__title { font-family: var(--font-display); font-size: 16px; font-weight: 720; color: var(--text); line-height: 1.18; }
 .page-header__desc  { font-size: 13px; color: var(--text3); }
+
+.page-header--panel {
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radio);
+  box-shadow: var(--shadow-sm);
+}
 
 /* ── Barra de busqueda ── */
 .search-bar {

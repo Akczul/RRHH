@@ -6,11 +6,20 @@ export const useAuthStore = create((set, get) => ({
   isAuthenticated: false,
   loading: true,
   error: null,
+  sessionRevision: 0,
 
-  setSession: (user) => set({
+  setSession: (user) => set((state) => ({
     user,
     isAuthenticated: !!user,
-  }),
+    sessionRevision: state.sessionRevision + 1,
+  })),
+
+  clearSession: (updates = {}) => set((state) => ({
+    user: null,
+    isAuthenticated: false,
+    sessionRevision: state.sessionRevision + 1,
+    ...updates,
+  })),
 
   login: async (email, password) => {
     set({ loading: true, error: null });
@@ -23,9 +32,7 @@ export const useAuthStore = create((set, get) => ({
       set({ loading: false });
       return data.user;
     } catch (error) {
-      set({
-        user: null,
-        isAuthenticated: false,
+      get().clearSession({
         loading: false,
         error: error.message,
       });
@@ -38,9 +45,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       await logoutAPI();
     } finally {
-      set({
-        user: null,
-        isAuthenticated: false,
+      get().clearSession({
         loading: false,
         error: null,
       });
@@ -48,19 +53,27 @@ export const useAuthStore = create((set, get) => ({
   },
 
   checkAuth: async () => {
+    const startedRevision = get().sessionRevision;
     set({ loading: true, error: null });
     try {
       const data = await obtenerPerfilAPI();
       const user = data.success ? data.user : null;
+
+      if (get().sessionRevision !== startedRevision) {
+        set({ loading: false });
+        return get().user;
+      }
+
       get().setSession(user);
       set({ loading: false });
       return user;
     } catch {
-      set({
-        user: null,
-        isAuthenticated: false,
-        loading: false,
-      });
+      if (get().sessionRevision !== startedRevision) {
+        set({ loading: false });
+        return get().user;
+      }
+
+      get().clearSession({ loading: false });
       return null;
     }
   },

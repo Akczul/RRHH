@@ -24,6 +24,12 @@ const IcoArrowLeft = () => (
   </svg>
 );
 
+const IcoCheck = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
 export default function RecoverPassword() {
   const [email, setEmail] = useState('');
   const [enviando, setEnviando] = useState(false);
@@ -42,10 +48,10 @@ export default function RecoverPassword() {
       if (respuesta?.success) {
         setEnviado(true);
       } else {
-        throw new Error('No se pudo enviar la solicitud de recuperacion.');
+        throw new Error('No se pudo enviar la solicitud de recuperación.');
       }
     } catch (err) {
-      setError(err.message || 'Error al enviar instrucciones de recuperacion.');
+      setError(err.message || 'Error al enviar instrucciones de recuperación.');
     } finally {
       setEnviando(false);
     }
@@ -60,7 +66,7 @@ export default function RecoverPassword() {
         </div>
         <div className="recover-brand__body">
           <h1 className="recover-brand__title">Recupera el acceso<br />a tu cuenta.</h1>
-          <p className="recover-brand__sub">Te enviaremos instrucciones para restablecer tu contrasena de forma segura.</p>
+          <p className="recover-brand__sub">Te enviaremos instrucciones para restablecer tu contraseña de forma segura.</p>
         </div>
         <div className="recover-brand__circle recover-brand__circle--1" />
         <div className="recover-brand__circle recover-brand__circle--2" />
@@ -69,28 +75,28 @@ export default function RecoverPassword() {
       <div className="recover-form-panel">
         <div className="recover-form-wrap">
           <Link to="/login" className="recover-back">
-            <IcoArrowLeft /> Volver al inicio de sesion
+            <IcoArrowLeft /> Volver al inicio de sesión
           </Link>
 
           <div className="recover-icon">
             <IcoMail />
           </div>
 
-          <h2 className="recover-title">Olvide mi contrasena</h2>
+          <h2 className="recover-title">Olvidé mi contraseña</h2>
           <p className="recover-desc">
-            Ingresa tu correo electronico y te enviaremos un enlace para restablecer tu contrasena.
+            Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
           </p>
 
           {enviado ? (
             <div className="recover-success">
-              <div className="recover-success__icon">✅</div>
+              <div className="recover-success__icon"><IcoCheck /></div>
               <h3 className="recover-success__title">Correo enviado</h3>
               <p className="recover-success__desc">
-                Si <strong>{email}</strong> esta registrado, recibiras las instrucciones en breve.
+                Si <strong>{email}</strong> está registrado, recibirás las instrucciones en breve.
                 Revisa tu carpeta de spam si no encuentras el correo.
               </p>
               <Link to="/login" className="recover-login-link">
-                Regresar al inicio de sesion
+                Regresar al inicio de sesión
               </Link>
             </div>
           ) : (
@@ -103,7 +109,7 @@ export default function RecoverPassword() {
 
               <form className="recover-form" onSubmit={handleSubmit}>
                 <div className="field">
-                  <label className="field__label" htmlFor="rec-email">Correo electronico</label>
+                  <label className="field__label" htmlFor="rec-email">Correo electrónico</label>
                   <input
                     id="rec-email"
                     type="email"

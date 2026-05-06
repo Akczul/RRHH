@@ -167,8 +167,14 @@ export const registrarSalidaAPI = (datos = {}) =>
 export const obtenerAsistenciaPorFechaAPI = (date) =>
   peticion(`/attendance/date/${date}`);
 
+export const obtenerMiAsistenciaAPI = () =>
+  peticion('/attendance/me');
+
 export const obtenerAsistenciaEmpleadoAPI = (employeeId) =>
   peticion(`/attendance/${employeeId}`);
+
+export const obtenerEmpleadosAPI = () =>
+  peticion('/empleados');
 
 export const obtenerReporteAsistenciaMensualAPI = ({ month, year }) =>
   peticion(`/reports/attendance/monthly?month=${encodeURIComponent(month)}&year=${encodeURIComponent(year)}`);

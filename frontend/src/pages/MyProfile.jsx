@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { obtenerPerfilAPI, actualizarPerfilAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 import Avatar from '../components/ui/Avatar';
@@ -77,7 +77,7 @@ export default function MyProfile() {
   const [errorModal, setErrorModal] = useState('');
   const [exito, setExito] = useState('');
 
-  const cargarPerfil = async () => {
+  const cargarPerfil = useCallback(async () => {
     setCargando(true);
     setError(null);
     try {
@@ -88,11 +88,11 @@ export default function MyProfile() {
     } finally {
       setCargando(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    cargarPerfil();
-  }, []);
+    void Promise.resolve().then(cargarPerfil);
+  }, [cargarPerfil]);
 
   const abrirModalEdicion = () => {
     setErrorModal('');
@@ -160,14 +160,6 @@ export default function MyProfile() {
 
   return (
     <div className="mi-perfil">
-
-      {/* ── Encabezado de la pagina ── */}
-      <div className="page-header">
-        <div className="page-header__left">
-          <h1 className="page-header__title">Mi Perfil</h1>
-          <p className="page-header__desc">Informacion de tu cuenta en CorpHR</p>
-        </div>
-      </div>
 
       {exito && (
         <Alert tipo="success" onCerrar={() => setExito('')}>{exito}</Alert>
@@ -240,7 +232,7 @@ export default function MyProfile() {
               />
               <FilaPerfil
                 icono={<IcoMail />}
-                etiqueta="Correo electronico"
+                etiqueta="Correo electrónico"
                 valor={usuario.email}
               />
               <FilaPerfil

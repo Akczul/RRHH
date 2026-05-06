@@ -12,7 +12,8 @@
  *   EmployeeRoute — requiere rol 'employee'
  *   PublicRoute   — redirige al dashboard si ya esta autenticado
  */
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 /* Componentes de layout */
@@ -30,6 +31,7 @@ import Departments from '../pages/Departments';   /* Departamentos     → /api/
 import Attendance  from '../pages/Attendance';
 import Reports     from '../pages/Reports';
 import Register    from '../pages/Register';       /* Registro de usuarios → /api/auth/register */
+import GenerateReports from '../pages/GenerateReports';
 
 /* Paginas del empleado */
 import MyProfile    from '../pages/MyProfile';
@@ -73,6 +75,7 @@ function PublicRoute({ children }) {
 export default function AppRouter() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
 
         {/* ── Rutas publicas (sin layout) ── */}
@@ -113,6 +116,9 @@ export default function AppRouter() {
           <Route path="reportes" element={
             <AdminRoute><Reports /></AdminRoute>
           } />
+          <Route path="generar-reportes" element={
+            <AdminRoute><GenerateReports /></AdminRoute>
+          } />
           <Route path="registro" element={
             <AdminRoute><Register /></AdminRoute>
           } />
@@ -134,6 +140,17 @@ export default function AppRouter() {
   );
 }
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.querySelector('.layout__content')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [pathname]);
+
+  return null;
+}
+
 /** Redirige al inicio correcto segun el rol del usuario */
 function RedirectPorRol() {
   const { esAdmin } = useAuth();
@@ -149,7 +166,7 @@ function RouteLoader() {
       background: 'var(--bg)',
       color: 'var(--text)'
     }}>
-      <span className="spinner spinner--lg" aria-label="Cargando sesion" />
+      <span className="spinner spinner--lg" aria-label="Cargando sesión" />
     </div>
   );
 }

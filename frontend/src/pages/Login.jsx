@@ -84,7 +84,7 @@ export default function Login() {
         { replace: true }
       );
     } catch (err) {
-      setError(err.message || 'Error al iniciar sesion');
+      setError(err.message || 'Error al iniciar sesión');
     } finally {
       setCargando(false);
     }
@@ -204,7 +204,7 @@ export default function Login() {
                   type="button"
                   className="field__eye"
                   onClick={() => setVerPass(v => !v)}
-                  aria-label={verPass ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+                  aria-label={verPass ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 >
                   {verPass ? <IcoEyeOff /> : <IcoEye />}
                 </button>

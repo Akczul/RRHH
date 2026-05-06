@@ -21,8 +21,8 @@
 .perfil__hero-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(67,97,238,0.12) 0%, rgba(139,92,246,0.08) 100%);
-  border-radius: var(--radio-lg) var(--radio-lg) 0 0;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  border-radius: var(--radio) var(--radio) 0 0;
   pointer-events: none;
 }
 
@@ -58,11 +58,11 @@
 
 /* Nombre del usuario */
 .perfil__nombre {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-size: 22px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 1.2;
 }
 

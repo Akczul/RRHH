@@ -23,6 +23,15 @@ import './Dashboard.css';
 /* ── Formatear precio como moneda ── */
 const fmt = (n) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
 
+const fmtCompact = (n) => {
+  if (!n) return '$0';
+  if (n >= 1000000) {
+    const millones = n / 1000000;
+    return `$${millones.toLocaleString('es-CO', { maximumFractionDigits: 1 })} M`;
+  }
+  return fmt(n);
+};
+
 /* ── Formatear fecha larga ── */
 const fmtFecha = () => new Intl.DateTimeFormat('es-CO', {
   weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
@@ -87,7 +96,7 @@ export default function Dashboard() {
       <div className="dash fade-in">
         <div className="dash__stats">
           {[1,2,3,4].map(i => (
-            <div key={i} className="skeleton" style={{ height: 110, borderRadius: 'var(--radio-lg)' }} />
+            <div key={i} className="skeleton" style={{ height: 110, borderRadius: 'var(--radio)' }} />
           ))}
         </div>
       </div>
@@ -101,7 +110,7 @@ export default function Dashboard() {
       <div className="dash__welcome">
         <div className="dash__welcome-left">
           <p className="dash__welcome-caption">Panel de control</p>
-          <h2 className="dash__welcome-title">Bienvenido, {primerNombre} 👋</h2>
+          <h2 className="dash__welcome-title">Bienvenido, {primerNombre}</h2>
           <p className="dash__welcome-date">{fmtFecha()}</p>
         </div>
         <div className="dash__welcome-meta">
@@ -131,14 +140,14 @@ export default function Dashboard() {
         />
         <StatCard
           icono={<IcoSalary />}
-          valor={fmt(salarioPromedio)}
+          valor={fmtCompact(salarioPromedio)}
           etiqueta="Salario promedio"
           color="orange"
         />
         <StatCard
           icono={<IcoStar />}
           valor={posicionTopSalario?.name || '—'}
-          etiqueta="Posicion mejor remunerada"
+          etiqueta="Posición mejor remunerada"
           color="purple"
         />
       </div>
@@ -158,16 +167,16 @@ export default function Dashboard() {
 
           {posiciones.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state__icon">💼</div>
+              <div className="empty-state__icon" aria-hidden="true">--</div>
               <p className="empty-state__title">Sin posiciones</p>
-              <p className="empty-state__desc">Agrega posiciones desde la seccion Posiciones</p>
+              <p className="empty-state__desc">Agrega posiciones desde la sección Posiciones</p>
             </div>
           ) : (
             <div className="table-wrap">
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Posicion</th>
+                    <th>Posición</th>
                     <th>Departamento</th>
                     <th>Salario</th>
                   </tr>
@@ -205,9 +214,9 @@ export default function Dashboard() {
 
           {departamentos.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state__icon">🏢</div>
+              <div className="empty-state__icon" aria-hidden="true">--</div>
               <p className="empty-state__title">Sin departamentos</p>
-              <p className="empty-state__desc">Crea departamentos desde la seccion correspondiente</p>
+              <p className="empty-state__desc">Crea departamentos desde la sección correspondiente</p>
             </div>
           ) : (
             <div className="dash__dept-list">

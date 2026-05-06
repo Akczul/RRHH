@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import AppRouter from './router/AppRouter';
+import ToastContainer from './components/ui/ToastContainer';
 import { useAuthStore } from './stores/useAuthStore';
 import { useThemeStore } from './stores/useThemeStore';
 
@@ -12,7 +13,12 @@ const App = () => {
     checkAuth();
   }, [checkAuth, initTheme]);
 
-  return <AppRouter />;
+  return (
+    <>
+      <AppRouter />
+      <ToastContainer />
+    </>
+  );
 };
 
 export default App;

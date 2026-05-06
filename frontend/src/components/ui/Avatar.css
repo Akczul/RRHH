@@ -8,13 +8,13 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
   /* Letras en mayuscula */
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
 }
 
 /* ── Tamanos del avatar ── */

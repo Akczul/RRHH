@@ -10,7 +10,7 @@
 .placeholder-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radio-lg);
+  border-radius: var(--radio);
   padding: 64px 32px;
   text-align: center;
   display: flex;
@@ -19,7 +19,6 @@
   gap: 16px;
 }
 
-/* Emoji / icono decorativo */
 .placeholder-card__icon {
   font-size: 52px;
   line-height: 1;
@@ -29,11 +28,11 @@
 
 /* Titulo principal */
 .placeholder-card__title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
   font-size: 20px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 /* Descripcion del modulo */

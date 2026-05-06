@@ -180,8 +180,8 @@ export default function Departments() {
       {/* ── Encabezado de la pagina ── */}
       <div className="page-header">
         <div className="page-header__left">
-          <h1 className="page-header__title">Departamentos</h1>
-          <p className="page-header__desc">Gestion de areas y departamentos de la empresa</p>
+          <h1 className="page-header__title">Áreas organizacionales</h1>
+          <p className="page-header__desc">Estructura interna y descripción de cada equipo</p>
         </div>
         <Button variante="primary" icono={<IcoPlus />} onClick={() => { setErrorAccion(null); setModalCrear(true); }}>
           Nuevo departamento
@@ -226,7 +226,7 @@ export default function Departments() {
         <div className="card">
           {filtrados.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-state__icon">🏢</div>
+              <div className="empty-state__icon" aria-hidden="true">--</div>
               <p className="empty-state__title">
                 {busqueda ? 'Sin resultados' : 'No hay departamentos'}
               </p>

@@ -10,11 +10,11 @@ import './Avatar.css';
 
 /* Gradientes predefinidos para asignar a usuarios */
 const GRADIENTES = [
-  'linear-gradient(135deg,#4361EE,#7B5CF6)',
-  'linear-gradient(135deg,#06D6A0,#059669)',
-  'linear-gradient(135deg,#F59E0B,#EF4444)',
-  'linear-gradient(135deg,#38BDF8,#4361EE)',
-  'linear-gradient(135deg,#8B5CF6,#F43F5E)',
+  'linear-gradient(135deg,#0F9F90,#0B7E73)',
+  'linear-gradient(135deg,#2563EB,#0EA5E9)',
+  'linear-gradient(135deg,#EA580C,#F97316)',
+  'linear-gradient(135deg,#7C3AED,#A78BFA)',
+  'linear-gradient(135deg,#334155,#475569)',
 ];
 
 /**
